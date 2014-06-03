@@ -1,0 +1,312 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F12FDE031937AC5000EE268F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12FDE021937AC5000EE268F /* Foundation.framework */; };
+		F12FDE051937AC5000EE268F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12FDE041937AC5000EE268F /* CoreGraphics.framework */; };
+		F12FDE071937AC5000EE268F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12FDE061937AC5000EE268F /* UIKit.framework */; };
+		F12FDE0D1937AC5000EE268F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F12FDE0B1937AC5000EE268F /* InfoPlist.strings */; };
+		F12FDE0F1937AC5000EE268F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F12FDE0E1937AC5000EE268F /* main.m */; };
+		F12FDE131937AC5000EE268F /* FSQAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F12FDE121937AC5000EE268F /* FSQAppDelegate.m */; };
+		F12FDE151937AC5000EE268F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F12FDE141937AC5000EE268F /* Images.xcassets */; };
+		F12FDE351937ACA500EE268F /* FSQSingleLocationSubscriber.m in Sources */ = {isa = PBXBuildFile; fileRef = F12FDE311937ACA500EE268F /* FSQSingleLocationSubscriber.m */; };
+		F12FDE361937ACA500EE268F /* FSQLocationBroker.m in Sources */ = {isa = PBXBuildFile; fileRef = F12FDE331937ACA500EE268F /* FSQLocationBroker.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F12FDDFF1937AC5000EE268F /* FSQLocationBrokerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FSQLocationBrokerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F12FDE021937AC5000EE268F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F12FDE041937AC5000EE268F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		F12FDE061937AC5000EE268F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		F12FDE0A1937AC5000EE268F /* FSQLocationBrokerTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FSQLocationBrokerTest-Info.plist"; sourceTree = "<group>"; };
+		F12FDE0C1937AC5000EE268F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F12FDE0E1937AC5000EE268F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F12FDE101937AC5000EE268F /* FSQLocationBrokerTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FSQLocationBrokerTest-Prefix.pch"; sourceTree = "<group>"; };
+		F12FDE111937AC5000EE268F /* FSQAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSQAppDelegate.h; sourceTree = "<group>"; };
+		F12FDE121937AC5000EE268F /* FSQAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSQAppDelegate.m; sourceTree = "<group>"; };
+		F12FDE141937AC5000EE268F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F12FDE1B1937AC5000EE268F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		F12FDE311937ACA500EE268F /* FSQSingleLocationSubscriber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FSQSingleLocationSubscriber.m; path = ../../FSQSingleLocationSubscriber.m; sourceTree = "<group>"; };
+		F12FDE321937ACA500EE268F /* FSQLocationBroker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FSQLocationBroker.h; path = ../../FSQLocationBroker.h; sourceTree = "<group>"; };
+		F12FDE331937ACA500EE268F /* FSQLocationBroker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FSQLocationBroker.m; path = ../../FSQLocationBroker.m; sourceTree = "<group>"; };
+		F12FDE341937ACA500EE268F /* FSQSingleLocationSubscriber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FSQSingleLocationSubscriber.h; path = ../../FSQSingleLocationSubscriber.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F12FDDFC1937AC5000EE268F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F12FDE051937AC5000EE268F /* CoreGraphics.framework in Frameworks */,
+				F12FDE071937AC5000EE268F /* UIKit.framework in Frameworks */,
+				F12FDE031937AC5000EE268F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F12FDDF61937AC5000EE268F = {
+			isa = PBXGroup;
+			children = (
+				F12FDE081937AC5000EE268F /* FSQLocationBrokerTest */,
+				F12FDE011937AC5000EE268F /* Frameworks */,
+				F12FDE001937AC5000EE268F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F12FDE001937AC5000EE268F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F12FDDFF1937AC5000EE268F /* FSQLocationBrokerTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F12FDE011937AC5000EE268F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F12FDE021937AC5000EE268F /* Foundation.framework */,
+				F12FDE041937AC5000EE268F /* CoreGraphics.framework */,
+				F12FDE061937AC5000EE268F /* UIKit.framework */,
+				F12FDE1B1937AC5000EE268F /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F12FDE081937AC5000EE268F /* FSQLocationBrokerTest */ = {
+			isa = PBXGroup;
+			children = (
+				F12FDE111937AC5000EE268F /* FSQAppDelegate.h */,
+				F12FDE121937AC5000EE268F /* FSQAppDelegate.m */,
+				F12FDE321937ACA500EE268F /* FSQLocationBroker.h */,
+				F12FDE331937ACA500EE268F /* FSQLocationBroker.m */,
+				F12FDE341937ACA500EE268F /* FSQSingleLocationSubscriber.h */,
+				F12FDE311937ACA500EE268F /* FSQSingleLocationSubscriber.m */,
+				F12FDE141937AC5000EE268F /* Images.xcassets */,
+				F12FDE091937AC5000EE268F /* Supporting Files */,
+			);
+			path = FSQLocationBrokerTest;
+			sourceTree = "<group>";
+		};
+		F12FDE091937AC5000EE268F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F12FDE0A1937AC5000EE268F /* FSQLocationBrokerTest-Info.plist */,
+				F12FDE0B1937AC5000EE268F /* InfoPlist.strings */,
+				F12FDE0E1937AC5000EE268F /* main.m */,
+				F12FDE101937AC5000EE268F /* FSQLocationBrokerTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F12FDDFE1937AC5000EE268F /* FSQLocationBrokerTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F12FDE2B1937AC5000EE268F /* Build configuration list for PBXNativeTarget "FSQLocationBrokerTest" */;
+			buildPhases = (
+				F12FDDFB1937AC5000EE268F /* Sources */,
+				F12FDDFC1937AC5000EE268F /* Frameworks */,
+				F12FDDFD1937AC5000EE268F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FSQLocationBrokerTest;
+			productName = FSQLocationBrokerTest;
+			productReference = F12FDDFF1937AC5000EE268F /* FSQLocationBrokerTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F12FDDF71937AC5000EE268F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = FSQ;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = Foursquare;
+			};
+			buildConfigurationList = F12FDDFA1937AC5000EE268F /* Build configuration list for PBXProject "FSQLocationBrokerTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = F12FDDF61937AC5000EE268F;
+			productRefGroup = F12FDE001937AC5000EE268F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F12FDDFE1937AC5000EE268F /* FSQLocationBrokerTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F12FDDFD1937AC5000EE268F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F12FDE0D1937AC5000EE268F /* InfoPlist.strings in Resources */,
+				F12FDE151937AC5000EE268F /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F12FDDFB1937AC5000EE268F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F12FDE351937ACA500EE268F /* FSQSingleLocationSubscriber.m in Sources */,
+				F12FDE0F1937AC5000EE268F /* main.m in Sources */,
+				F12FDE361937ACA500EE268F /* FSQLocationBroker.m in Sources */,
+				F12FDE131937AC5000EE268F /* FSQAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		F12FDE0B1937AC5000EE268F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F12FDE0C1937AC5000EE268F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F12FDE291937AC5000EE268F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F12FDE2A1937AC5000EE268F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F12FDE2C1937AC5000EE268F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FSQLocationBrokerTest/FSQLocationBrokerTest-Prefix.pch";
+				INFOPLIST_FILE = "FSQLocationBrokerTest/FSQLocationBrokerTest-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		F12FDE2D1937AC5000EE268F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FSQLocationBrokerTest/FSQLocationBrokerTest-Prefix.pch";
+				INFOPLIST_FILE = "FSQLocationBrokerTest/FSQLocationBrokerTest-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F12FDDFA1937AC5000EE268F /* Build configuration list for PBXProject "FSQLocationBrokerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F12FDE291937AC5000EE268F /* Debug */,
+				F12FDE2A1937AC5000EE268F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F12FDE2B1937AC5000EE268F /* Build configuration list for PBXNativeTarget "FSQLocationBrokerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F12FDE2C1937AC5000EE268F /* Debug */,
+				F12FDE2D1937AC5000EE268F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F12FDDF71937AC5000EE268F /* Project object */;
+}
