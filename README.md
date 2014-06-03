@@ -11,6 +11,8 @@ This repo also includes the FSQSingleLocationSubscriber class, a helper that wor
 
 Both these classes are thoroughly documented in their headers (which should be automatically parsed and available through Xcode's documentation popovers), but this file includes a brief overview of their features.
 
+Note: A test project is included but it is used for build testing only - an example application is currently not included in this repository.
+
 Setup
 =====
 FSQLocationBroker has no dependencies other than Foundation and CoreLocation. Simply add the files to your project and you are ready to go.
