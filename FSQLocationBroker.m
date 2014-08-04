@@ -293,6 +293,7 @@ static Class sharedInstanceClass = nil;
 // We use these methods to sync and reassign regions to a subscriber
 
 - (void)verifyMonitoredRegionIdentifiers {
+#if !NS_BLOCK_ASSERTIONS
     for (NSObject<FSQRegionMonitoringSubscriber> *regionSubscriber in self.regionSubscribers) {
         NSSet *regions = regionSubscriber.monitoredRegions;
         for (CLRegion *region in regions) {
@@ -302,6 +303,7 @@ static Class sharedInstanceClass = nil;
                      region.identifier);
         }
     }
+#endif
 }
 
 - (NSSet *)subscriberMonitoredRegions {
