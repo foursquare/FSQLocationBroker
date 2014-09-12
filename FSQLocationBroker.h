@@ -79,6 +79,9 @@
  @see [CLLocationManager authorizationStatus]
  
  @return YES if the app is authorized for location services, NO if not.
+ 
+ @note On iOS 8+, will return YES if authorized for either always or when in use. 
+ Use [CLLocationManager authorizationStatus] to get more details.
  */
 + (BOOL)isAuthorized;
 
@@ -157,6 +160,22 @@
  reflected if you access the locationSubscribers property.
  */
 - (void)removeAllSubscribers NS_REQUIRES_SUPER;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+/**
+ Request InUse Authorization.
+ 
+ This allows location services to run when your app is in the foreground.
+ */
+- (void)requestWhenInUseAuthorization;
+
+/**
+ Request Always Authorization
+ 
+ This allows location services to run in the background.
+ */
+- (void)requestAlwaysAuthorization;
+#endif
 
 @end
 

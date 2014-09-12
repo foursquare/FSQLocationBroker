@@ -18,6 +18,7 @@ build_products
 xcuserdata
 profile
 *.moved-aside
+*.xccheckout
 
 # finder
 .DS_Store

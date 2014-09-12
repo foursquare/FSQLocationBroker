@@ -61,7 +61,13 @@ static Class sharedInstanceClass = nil;
 }
 
 + (BOOL)isAuthorized {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
+    return (authStatus == kCLAuthorizationStatusAuthorizedAlways
+            || authStatus == kCLAuthorizationStatusAuthorizedWhenInUse);
+#else
     return ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized);
+#endif
 }
 
 - (id)init {
@@ -403,6 +409,26 @@ static Class sharedInstanceClass = nil;
     // Refresh so it will re-account for non-background enabled subscribers
     [self refreshLocationSubscribers];
 }
+
+#pragma mark - Authorization -
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+
+- (void)requestWhenInUseAuthorization {
+    // Guard against users on iOS 7 and earlier
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.locationManager requestWhenInUseAuthorization];        
+    }
+}
+
+- (void)requestAlwaysAuthorization {
+    // Guard against users on iOS 7 and earlier
+    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self.locationManager requestAlwaysAuthorization];        
+    }
+}
+
+#endif
 
 #pragma mark - KVO callbacks -
 
