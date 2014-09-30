@@ -36,7 +36,7 @@ Your subscriber can define a list of regions it would like to monitor and the br
 
 Broker Methods and Properties
 =============================
-You can access the shared pointer singleton for the locatiom broker via the `shared` method. If you want to use a custom subclass of FSQLocationBroker in your app, you should first set your subclass's class by calling the `setSharedClass:` method on the base FSQLocationBroker. This will cause the base implementation of `[FSQLocationBroker shared]` to forward onto the `shared` method of the class you specify and avoid creating multiple singletons.
+You can access the shared pointer singleton for the location broker via the `shared` method. If you want to use a custom subclass of FSQLocationBroker in your app, you should first set your subclass's class by calling the `setSharedClass:` method on the base FSQLocationBroker. This will cause the base implementation of `[FSQLocationBroker shared]` to forward onto the `shared` method of the class you specify and avoid creating multiple singletons.
 
 You can add location or region monitoring subscribers to the broker using the following methods:
 ```objc
@@ -62,6 +62,6 @@ Contributors
 ============
 The classes were initially developed by Foursquare Labs for internal use. 
 
-FSQLocationBroker was originally written by Anoop Ranganath ([@anoopr](https://twitter.com/anoopr)) with major contributions by Adam Alix ([@adamalix](https://twitter.com/adamalix)). It is currently maintained by Adam Alix and Brian Dorfman ([@bdorfman](https://twitter.com/bdorfman)).
+FSQLocationBroker was originally written by Anoop Ranganath ([@anoopr](https://twitter.com/anoopr)) with major contributions by Adam Alix ([@adamalix](https://twitter.com/adamalix)). It is currently maintained by Brian Dorfman ([@bdorfman](https://twitter.com/bdorfman)).
 
 FSQSingleLocationSubscriber was originally written and is currently maintained by Brian Dorfman.
