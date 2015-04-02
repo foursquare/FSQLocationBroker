@@ -23,11 +23,11 @@ Bugfixes:
  - Add .gitignore and remove files which should have been ignored.
  
 ## 1.0.1 (2014-08-04)
- 
+
 Bugfixes:
- 
+
  - Compile out NSAssert and related code if asserts are disbaled
- 
- ## 1.0.0 (2014-06-03)
- 
- Initial release
+
+## 1.0.0 (2014-06-03)
+
+Initial release
