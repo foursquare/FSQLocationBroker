@@ -9,6 +9,10 @@
 
 @protocol FSQLocationSubscriber, FSQRegionMonitoringSubscriber;
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+@protocol FSQVisitMonitoringSubscriber;
+#endif
+
 #pragma mark - FSQLocationBroker interface
 /**
  Manager for location events application-wide. Subscribers must implement the
@@ -46,6 +50,18 @@
  set might not immediately reflect changes you make.
  */
 @property (atomic, readonly) NSSet *regionSubscribers;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+
+/**
+ The current set of visit monitoring subscribers.
+ 
+ Additions and removals of subscribers are processed on a background queue for thread safety reasons, so this
+ set might not immediately reflect changes you make.
+ */
+@property (atomic, readonly) NSSet *visitSubscribers;
+
+#endif
 
 /**
  Access point to the location broker shared pointer/singleton. 
@@ -149,6 +165,52 @@
  */
 - (void)refreshRegionMonitoringSubscribers NS_REQUIRES_SUPER;
 
+/**
+ Calls through to the location managers requestStateForRegion: method.
+ 
+ Results will be delivered to region monitoring subscribers of the requested region.
+ 
+ @see [CLLocationManager requestStateForRegion:]
+ 
+ @param region The region whose state you want to know. This object must be an instance of one of the standard region subclasses provided by Map Kit. You cannot use this method to determine the state of custom regions you define yourself.
+ */
+- (void)requestStateForRegion:(CLRegion *)region NS_REQUIRES_SUPER;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+
+/**
+ Add a new visit subscriber to the broker.
+ 
+ The subscriber's location options will be taken into account when requesting locations services from the system.
+ 
+ @param visitSubscriber Visit subscriber to add. If this object is already in the broker's visit subscriber
+ list this method does nothing. The subscriber will be retained by the broker.
+ 
+ @note Additions are processed on a background queue for thread safety reasons, and so might not be immediately
+ reflected if you access the visitSubscribers property.
+ */
+- (void)addVisitSubscriber:(NSObject<FSQVisitMonitoringSubscriber> *)visitSubscriber NS_REQUIRES_SUPER;
+
+/**
+ Remove a visit subscriber from the broker.
+ 
+ @param visitSubscriber Visit subscriber to remove. If this object is not currently in the broker's visit
+ subscriber list this method does nothing.
+ 
+ @note Removals are processed on a background queue for thread safety reasons, and so might not be immediately
+ reflected if you access the visitSubscribers property.
+ */
+- (void)removeVisitSubscriber:(NSObject<FSQVisitMonitoringSubscriber> *)visitSubscriber NS_REQUIRES_SUPER;
+
+/**
+ Updates the visit services being requested from the system by the broker by checking the current list of
+ visit subscribers.
+ 
+ This method is called automatically for you when a subscriber is added or removed.
+ */
+- (void)refreshVisitSubscribers NS_REQUIRES_SUPER;
+
+#endif
 
 /**
  Remove all subscribers of all types and turn off all location services.
@@ -312,6 +374,29 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
 
 @end
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+
+#pragma mark - FSQVisitMonitoringSubscriber Protocol
+
+@protocol FSQVisitMonitoringSubscriber <NSObject>
+
+- (BOOL)shouldMonitorVisits;
+
+/**
+ Visits will be forwarded to this method if this object has been added as a visit subscriber and shouldMonitorVisits
+ returns YES.
+ 
+ @param visit The CLVisit obtained.
+ 
+ @see [CLLocationManagerDelegate locationManager:didVisit:]
+ */
+
+- (void)locationManagerDidVisit:(CLVisit *)visit;
+
+@end
+
+#endif
+
 #pragma mark - FSQRegionMonitoringSubscriber Protocol
 
 /**
@@ -390,6 +475,16 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
 - (void)didExitRegion:(CLRegion *)region;
 
 @optional
+
+/**
+ Location manager didDetermineState:forRegion: calls for your monitored regions will be forwarded to this method.
+ 
+ @see [CLLocationManagerDelegate locationManager:didDetermineState:forRegion:]
+ 
+ @param state The state of the specified region. For a list of possible values, see the CLRegionState type.
+ @param region The region whose state was determined.
+ */
+- (void)didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region;
 
 /**
  System location manager errors for your monitored regions will be forwarded to this method

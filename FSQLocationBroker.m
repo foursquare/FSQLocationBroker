@@ -16,16 +16,18 @@ BOOL subscriberShouldReceiveLocationUpdates(NSObject<FSQLocationSubscriber> *loc
 BOOL subscriberShouldReceiveErrors(NSObject<FSQLocationSubscriber> *locationSubscriber);
 BOOL subscriberWantsContinuousLocation(NSObject<FSQLocationSubscriber> *locationSubscriber);
 BOOL subscriberWantsSLCMonitoring(NSObject<FSQLocationSubscriber> *locationSubscriber);
+BOOL subscriberWantsVisitMonitoring(NSObject<FSQVisitMonitoringSubscriber> *locationSubscriber);
 
 @interface FSQLocationBroker ()
 
 // Publicly exposed as readonly
 @property (atomic, readwrite) NSSet *locationSubscribers;
 @property (atomic, readwrite) NSSet *regionSubscribers;
+@property (atomic, readwrite) NSSet *visitSubscribers;
 
 // Private
 @property (nonatomic) CLLocationManager *locationManager;
-@property (nonatomic) BOOL isMonitoringSignificantLocation, isUpdatingLocation;
+@property (nonatomic) BOOL isMonitoringSignificantLocation, isUpdatingLocation, isMonitoringVisits;
 @property (nonatomic) dispatch_queue_t serialQueue;
 
 @end
@@ -75,10 +77,13 @@ static Class sharedInstanceClass = nil;
         self.locationManager = [CLLocationManager new];
         self.locationManager.delegate = self;
 
-        self.locationSubscribers = [NSMutableSet new];
-        self.regionSubscribers = [NSMutableSet new];
+        self.locationSubscribers = [NSSet new];
+        self.regionSubscribers = [NSSet new];
+        self.visitSubscribers = [NSSet new];
+        
         self.isMonitoringSignificantLocation = NO;
         self.isUpdatingLocation = NO;
+        self.isMonitoringVisits = NO;
         
         self.serialQueue = dispatch_queue_create("LocationBrokerSubscriberMutations", DISPATCH_QUEUE_SERIAL);
         
@@ -108,9 +113,14 @@ static Class sharedInstanceClass = nil;
         
         self.locationSubscribers = [NSSet new];
         self.regionSubscribers = [NSSet new];
+        self.visitSubscribers = [NSSet new];
         
         [self.locationManager stopMonitoringSignificantLocationChanges];
         [self.locationManager stopUpdatingLocation];
+        
+        if ([self.locationManager respondsToSelector:@selector(stopMonitoringVisits)]) {
+            [self.locationManager stopMonitoringVisits];
+        }
         
         for (CLRegion *region in self.locationManager.monitoredRegions) {
             [self.locationManager stopMonitoringForRegion:region];
@@ -144,6 +154,7 @@ static Class sharedInstanceClass = nil;
                                  forKeyPath:NSStringFromSelector(@selector(locationSubscriberOptions))
                                     options:0
                                     context:kLocationBrokerLocationSubscriberKVOContext];
+            
             [self refreshLocationSubscribers];
         }
     });
@@ -158,6 +169,8 @@ static Class sharedInstanceClass = nil;
             NSMutableSet *mutableLocationSubscribers = [self.locationSubscribers mutableCopy];
             [mutableLocationSubscribers removeObject:locationSubscriber];
             self.locationSubscribers = [mutableLocationSubscribers copy];
+            
+            [self refreshLocationSubscribers];
         }
     });
 }
@@ -190,6 +203,17 @@ static Class sharedInstanceClass = nil;
     return NO;
 }
 
+- (BOOL)shouldMonitorVisits {
+    
+    for (NSObject<FSQVisitMonitoringSubscriber> *locationSubscriber in self.visitSubscribers) {
+        if (subscriberWantsVisitMonitoring(locationSubscriber)) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 - (CLLocationAccuracy)finestGrainAccuracy {
     
     BOOL isBackgrounded = applicationIsBackgrounded();
@@ -214,6 +238,13 @@ static Class sharedInstanceClass = nil;
 }
 
 - (void)refreshLocationSubscribers {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            [self refreshLocationSubscribers];
+        });
+        return;
+    }
+    
     CLLocationAccuracy newAccuracy = [self finestGrainAccuracy];
     if (self.locationManager.desiredAccuracy != newAccuracy) {
         self.locationManager.desiredAccuracy = newAccuracy;
@@ -269,16 +300,24 @@ static Class sharedInstanceClass = nil;
     dispatch_async(self.serialQueue, ^{
         if ([self.regionSubscribers containsObject:regionSubscriber]) {
             [regionSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(monitoredRegions))];
-            [self refreshRegionMonitoringSubscribers];
             
             NSMutableSet *mutableRegionSubscribers = [self.regionSubscribers mutableCopy];
             [mutableRegionSubscribers removeObject:regionSubscriber];
             self.regionSubscribers = [mutableRegionSubscribers copy];
+            
+            [self refreshRegionMonitoringSubscribers];
         }
     });
 }
 
 - (void)refreshRegionMonitoringSubscribers {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            [self refreshRegionMonitoringSubscribers];
+        });
+        return;
+    }
+    
     [self verifyMonitoredRegionIdentifiers];
     NSMutableSet *subscriberRegions = [self subscriberMonitoredRegions].mutableCopy;
     
@@ -331,6 +370,52 @@ static Class sharedInstanceClass = nil;
         NSString *identifier = [region.identifier componentsSeparatedByString:@"+"][0];
         NSObject<FSQRegionMonitoringSubscriber> *regionSubscriber = subscribersByIdentifier[identifier];
         [regionSubscriber addMonitoredRegion:region];
+    }
+}
+
+- (void)requestStateForRegion:(CLRegion *)region {
+    [self.locationManager requestStateForRegion:region];
+}
+
+#pragma mark VisitSubscriber
+
+- (void)addVisitSubscriber:(NSObject<FSQVisitMonitoringSubscriber> *)visitSubscriber {
+    dispatch_async(self.serialQueue, ^{
+        if (![self.visitSubscribers containsObject:visitSubscriber]) {
+            self.visitSubscribers = [self.visitSubscribers setByAddingObject:visitSubscriber];
+            [self refreshVisitSubscribers];
+        }
+    });
+}
+
+- (void)removeVisitSubscriber:(NSObject<FSQVisitMonitoringSubscriber> *)visitSubscriber {
+    dispatch_async(self.serialQueue, ^{
+        if ([self.visitSubscribers containsObject:visitSubscriber]) {
+            NSMutableSet *mutableVisitSubscribers = [self.visitSubscribers mutableCopy];
+            [mutableVisitSubscribers removeObject:visitSubscriber];
+            self.visitSubscribers = [mutableVisitSubscribers copy];
+            [self refreshVisitSubscribers];
+        }
+    });
+}
+
+- (void)refreshVisitSubscribers {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            [self refreshVisitSubscribers];
+        });
+        return;
+    }
+    
+    if ([self.locationManager respondsToSelector:@selector(startMonitoringVisits)]) {
+        if ([self shouldMonitorVisits] && !self.isMonitoringVisits) {
+            [self.locationManager startMonitoringVisits];
+            self.isMonitoringVisits = YES;
+        }
+        else {
+            [self.locationManager stopMonitoringVisits];
+            self.isMonitoringVisits = NO;
+        }
     }
 }
 
@@ -388,12 +473,31 @@ static Class sharedInstanceClass = nil;
     }
 }
 
+- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region {
+    for (id<FSQRegionMonitoringSubscriber> regionSubscriber in self.regionSubscribers) {
+        if ([regionSubscriber respondsToSelector:@selector(didDetermineState:forRegion:)] &&
+            [regionSubscriber.monitoredRegions containsObject:region]) {
+            [regionSubscriber didDetermineState:state forRegion:region];
+        }
+    }
+}
+
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
     for (id<FSQRegionMonitoringSubscriber> regionSubscriber in self.regionSubscribers) {
         if (regionSubscriber.shouldReceiveRegionMonitoringErrors 
             && [regionSubscriber respondsToSelector:@selector(monitoringDidFailForRegion:withError:)]
             && [regionSubscriber.monitoredRegions containsObject:region]) {
             [regionSubscriber monitoringDidFailForRegion:region withError:error];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didVisit:(CLVisit *)visit {
+    
+    for (NSObject<FSQVisitMonitoringSubscriber> *visitSubscriber in self.visitSubscribers) {
+        if (subscriberWantsVisitMonitoring(visitSubscriber)) {
+            
+            [visitSubscriber locationManagerDidVisit:visit];
         }
     }
 }
@@ -447,7 +551,11 @@ static Class sharedInstanceClass = nil;
 @end
 
 BOOL applicationIsBackgrounded() {
+#if (defined(__has_feature) && __has_feature(attribute_availability_app_extension))
+    return NO;
+#else
     return ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground);
+#endif
 }
 
 BOOL subscriberShouldRunInBackground(NSObject<FSQLocationSubscriber> *locationSubscriber) {
@@ -471,4 +579,8 @@ BOOL subscriberWantsContinuousLocation(NSObject<FSQLocationSubscriber> *location
 
 BOOL subscriberWantsSLCMonitoring(NSObject<FSQLocationSubscriber> *locationSubscriber) {
     return (locationSubscriber.locationSubscriberOptions & FSQLocationSubscriberShouldMonitorSLCs);
+}
+
+BOOL subscriberWantsVisitMonitoring(NSObject<FSQVisitMonitoringSubscriber> *locationSubscriber) {
+    return locationSubscriber.shouldMonitorVisits;
 }
