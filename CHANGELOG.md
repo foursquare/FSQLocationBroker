@@ -26,7 +26,7 @@ Bugfixes:
 
 Bugfixes:
 
- - Compile out NSAssert and related code if asserts are disbaled
+ - Compile out NSAssert and related code if asserts are disabled
 
 ## 1.0.0 (2014-06-03)
 
