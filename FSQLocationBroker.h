@@ -18,6 +18,9 @@
  Manager for location events application-wide. Subscribers must implement the
  _FSQXXXSubscriber_ protocol and themselves to the list of subscribers in order to receive
  notifications from the Broker.
+ 
+ @note When building app extension targets, you must define the FSQ_IS_APP_EXTENSION preprocessor macro to 
+        avoid compiling unavailable APIs. You can do this in your prefix header or the Xcode settings for your target.
  */
 
 @interface FSQLocationBroker : NSObject <CLLocationManagerDelegate>

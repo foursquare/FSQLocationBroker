@@ -1,3 +1,10 @@
+## 1.1.1 (2015-04-07)
+
+Bufixes:
+
+ - This fixes a critical bug when building with newer versions of clang (Xcode 6.2+) where the broker would always think that the app was not backgrounded.
+ - You must now define the FSQ_IS_APP_EXTENSION when compiling an extension in order to have unavailable apis compiled out.
+
 ## 1.1.0 (2015-04-02)
 
 Features:

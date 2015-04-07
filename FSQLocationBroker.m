@@ -551,11 +551,13 @@ static Class sharedInstanceClass = nil;
 @end
 
 BOOL applicationIsBackgrounded() {
-#if (defined(__has_feature) && __has_feature(attribute_availability_app_extension))
+
+#if defined(FSQ_IS_APP_EXTENSION)
     return NO;
 #else
     return ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground);
 #endif
+
 }
 
 BOOL subscriberShouldRunInBackground(NSObject<FSQLocationSubscriber> *locationSubscriber) {
