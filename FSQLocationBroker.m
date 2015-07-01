@@ -76,6 +76,13 @@ static Class sharedInstanceClass = nil;
     if ((self = [super init])) {
         self.locationManager = [CLLocationManager new];
         self.locationManager.delegate = self;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
+        if ([self.locationManager respondsToSelector:@selector(allowsBackgroundLocationUpdates)]) {
+            // We handle background location updating ourselves so we can just set the system
+            // to always be enabled and it will work as expected.
+            self.locationManager.allowsBackgroundLocationUpdates = YES;
+        }
+#endif
 
         self.locationSubscribers = [NSSet new];
         self.regionSubscribers = [NSSet new];
