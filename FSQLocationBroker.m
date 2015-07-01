@@ -286,6 +286,16 @@ static Class sharedInstanceClass = nil;
 - (void)addRegionMonitoringSubscriber:(NSObject<FSQRegionMonitoringSubscriber> *)regionSubscriber {
     dispatch_async(self.serialQueue, ^{
         if (![self.regionSubscribers containsObject:regionSubscriber]) {
+            
+            NSString *subscriberIdentifier = [regionSubscriber subscriberIdentifier];
+            
+            for (CLRegion *region in self.locationManager.monitoredRegions) {
+                NSString *identifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
+                if ([identifier isEqualToString:subscriberIdentifier]) {
+                    [regionSubscriber addMonitoredRegion:region];
+                }
+            }
+
             self.regionSubscribers = [self.regionSubscribers setByAddingObject:regionSubscriber];
             [regionSubscriber addObserver:self
                                forKeyPath:NSStringFromSelector(@selector(monitoredRegions))
@@ -305,44 +315,84 @@ static Class sharedInstanceClass = nil;
             [mutableRegionSubscribers removeObject:regionSubscriber];
             self.regionSubscribers = [mutableRegionSubscribers copy];
             
-            [self refreshRegionMonitoringSubscribers];
+            [self refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:[regionSubscriber subscriberIdentifier]
+                                                  shouldRemoveAllUnmonitoredRegions:NO];
         }
     });
 }
 
+
 - (void)refreshRegionMonitoringSubscribers {
+    [self refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:nil
+                                          shouldRemoveAllUnmonitoredRegions:NO];
+}
+
+- (void)refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:(NSString *)subscriberIdentifier 
+                                        shouldRemoveAllUnmonitoredRegions:(BOOL)shouldRemoveAllUnmonitoredRegions {
     if (![NSThread isMainThread]) {
         dispatch_async(dispatch_get_main_queue(), ^() {
-            [self refreshRegionMonitoringSubscribers];
+            [self refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:subscriberIdentifier
+                                                  shouldRemoveAllUnmonitoredRegions:shouldRemoveAllUnmonitoredRegions];
         });
         return;
     }
     
     [self verifyMonitoredRegionIdentifiers];
-    NSMutableSet *subscriberRegions = [self subscriberMonitoredRegions].mutableCopy;
+    NSMutableSet *allCurrentSubscriberRegions = [self subscriberMonitoredRegions].mutableCopy;
+    NSDictionary *allSubscribersByIdentifier = [self subscribersByIdentifier];
     
-    // Only remove unmonitored regions
-    NSMutableSet *unmonitored = self.locationManager.monitoredRegions.mutableCopy;
-    [unmonitored minusSet:subscriberRegions];
-    for (CLRegion *region in unmonitored) {
-        [self.locationManager stopMonitoringForRegion:region];
+    NSSet *allSubscriberRegionIdentifiers = [allCurrentSubscriberRegions valueForKey:NSStringFromSelector(@selector(identifier))];
+    
+    NSSet *unmonitoredRegions = [self.locationManager.monitoredRegions objectsPassingTest:^BOOL(CLRegion *evaluatedObject, BOOL *stop) {
+        return ![allSubscriberRegionIdentifiers containsObject:[evaluatedObject identifier]]; 
+    }];
+    
+    for (CLRegion *region in unmonitoredRegions) {
+        NSString *regionsSubscriberIdentifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
+
+        /*
+         Only remove unmonitored regions with subscriber ids we know about, or are for the subscriber we are removing
+         
+         Do not remove unmonitoried regions with unrecognized subscriber ids, as those subscribers may be added
+         later and we want to resync them.
+
+         Also do not remove regions without valid locbroker identifiers, as they may have been added separately
+         via some non locbroker code path (since monitored region set is shared by all instances of CLLocationManager)
+         */
+        if (shouldRemoveAllUnmonitoredRegions
+            || (regionsSubscriberIdentifier
+                && (allSubscribersByIdentifier[regionsSubscriberIdentifier] != nil
+                    || [regionsSubscriberIdentifier isEqualToString:subscriberIdentifier]))) {
+            [self.locationManager stopMonitoringForRegion:region];
+        }
     }
     
+    NSSet *currentlyMonitoringRegionIdentifiers = [self.locationManager.monitoredRegions valueForKey:NSStringFromSelector(@selector(identifier))];
+    
     // Don't remonitor already monitored regions
-    [subscriberRegions minusSet:self.locationManager.monitoredRegions];
-    for (CLRegion *newRegion in subscriberRegions) {
+    NSSet *regionsThatNeedMonitoring = [allCurrentSubscriberRegions objectsPassingTest:^BOOL(CLRegion *evaluatedObject, BOOL *stop) {
+        return ![currentlyMonitoringRegionIdentifiers containsObject:[evaluatedObject identifier]];
+    }];
+    
+    for (CLRegion *newRegion in regionsThatNeedMonitoring) {
         [self.locationManager startMonitoringForRegion:newRegion];
     }
 }
 
-// We use these methods to sync and reassign regions to a subscriber
+- (void)forceSyncRegionMonitorSubscribersWithSystem {
+    [self refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:nil 
+                                          shouldRemoveAllUnmonitoredRegions:YES];
+}
 
 - (void)verifyMonitoredRegionIdentifiers {
 #if !NS_BLOCK_ASSERTIONS
+ 
     for (NSObject<FSQRegionMonitoringSubscriber> *regionSubscriber in self.regionSubscribers) {
+        NSString *correctPrefix = [[regionSubscriber subscriberIdentifier] stringByAppendingString:@"+"];
+        
         NSSet *regions = regionSubscriber.monitoredRegions;
         for (CLRegion *region in regions) {
-            NSAssert([region.identifier hasPrefix:[regionSubscriber subscriberIdentifier]],
+            NSAssert([region.identifier hasPrefix:correctPrefix],
                      @"Subscriber: %@ monitors region without a matching prefix. (Region id: %@)",
                      [regionSubscriber class],
                      region.identifier);
@@ -359,17 +409,24 @@ static Class sharedInstanceClass = nil;
     return subscriberRegions;
 }
 
-- (void)reassignMonitoredRegionsToSubscribers {
+- (NSDictionary *)subscribersByIdentifier {
     NSMutableDictionary *subscribersByIdentifier = [NSMutableDictionary dictionary];
     
     for (NSObject<FSQRegionMonitoringSubscriber> *regionSubscriber in self.regionSubscribers) {
         subscribersByIdentifier[[regionSubscriber subscriberIdentifier]] = regionSubscriber;
     }
-    
-    for (CLRegion *region in self.locationManager.monitoredRegions) {
-        NSString *identifier = [region.identifier componentsSeparatedByString:@"+"][0];
-        NSObject<FSQRegionMonitoringSubscriber> *regionSubscriber = subscribersByIdentifier[identifier];
-        [regionSubscriber addMonitoredRegion:region];
+
+    return [subscribersByIdentifier copy];
+}
+
+- (NSString *)subscriberIdentifierFromRegionIdentifier:(NSString *)regionIdentifier {
+    NSArray *identifierComponents = [regionIdentifier componentsSeparatedByString:@"+"];
+    if (identifierComponents.count > 1) {
+        return [identifierComponents firstObject];
+    }
+    else {
+        // Not a valid location broker identifier
+        return nil;
     }
 }
 
@@ -446,48 +503,70 @@ static Class sharedInstanceClass = nil;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region {
-    // Our CLLocationManager.monitoredRegions has come out of sync with our subscriber monitored Regions.
-    // Recalculate and monitor the regions for each subscriber.
-    if (![manager.monitoredRegions isEqualToSet:[self subscriberMonitoredRegions]]) {
-        [self reassignMonitoredRegionsToSubscribers];
-    }
     
-    for (id<FSQRegionMonitoringSubscriber> regionSubscriber in self.regionSubscribers) {
-        if ([regionSubscriber.monitoredRegions containsObject:region]) {
+    NSString *regionsSubscriberIdentifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
+    
+    if (regionsSubscriberIdentifier) {
+        NSDictionary *subscribersByIdentifier = [self subscribersByIdentifier];
+        id<FSQRegionMonitoringSubscriber> regionSubscriber = subscribersByIdentifier[regionsSubscriberIdentifier];
+        if (regionSubscriber) {
             [regionSubscriber didEnterRegion:region];
+        }
+        else {
+            // This region's subscriber is not registered, so we should stop monitoring it.
+            [self.locationManager stopMonitoringForRegion:region];
         }
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
-    // Our CLLocationManager.monitoredRegions has come out of sync with our subscriber monitored Regions.
-    // Recalculate and monitor the regions for each subscriber.
-    if (![manager.monitoredRegions isEqualToSet:[self subscriberMonitoredRegions]]) {
-        [self reassignMonitoredRegionsToSubscribers];
-    }
+    NSString *regionsSubscriberIdentifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
     
-    for (id<FSQRegionMonitoringSubscriber> regionSubscriber in self.regionSubscribers) {
-        if ([regionSubscriber.monitoredRegions containsObject:region]) {
+    if (regionsSubscriberIdentifier) {
+        NSDictionary *subscribersByIdentifier = [self subscribersByIdentifier];
+        id<FSQRegionMonitoringSubscriber> regionSubscriber = subscribersByIdentifier[regionsSubscriberIdentifier];
+        if (regionSubscriber) {
             [regionSubscriber didExitRegion:region];
+        }
+        else {
+            // This region's subscriber is not registered, so we should stop monitoring it.
+            [self.locationManager stopMonitoringForRegion:region];
         }
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region {
-    for (id<FSQRegionMonitoringSubscriber> regionSubscriber in self.regionSubscribers) {
-        if ([regionSubscriber respondsToSelector:@selector(didDetermineState:forRegion:)] &&
-            [regionSubscriber.monitoredRegions containsObject:region]) {
+    NSString *regionsSubscriberIdentifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
+    
+    if (regionsSubscriberIdentifier) {
+        NSDictionary *subscribersByIdentifier = [self subscribersByIdentifier];
+        id<FSQRegionMonitoringSubscriber> regionSubscriber = subscribersByIdentifier[regionsSubscriberIdentifier];
+        if (regionSubscriber
+            && [regionSubscriber respondsToSelector:@selector(didDetermineState:forRegion:)]) {
             [regionSubscriber didDetermineState:state forRegion:region];
+        }
+        else {
+            // This region's subscriber is not registered, so we should stop monitoring it.
+            [self.locationManager stopMonitoringForRegion:region];
         }
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
-    for (id<FSQRegionMonitoringSubscriber> regionSubscriber in self.regionSubscribers) {
-        if (regionSubscriber.shouldReceiveRegionMonitoringErrors 
-            && [regionSubscriber respondsToSelector:@selector(monitoringDidFailForRegion:withError:)]
-            && [regionSubscriber.monitoredRegions containsObject:region]) {
-            [regionSubscriber monitoringDidFailForRegion:region withError:error];
+    NSString *regionsSubscriberIdentifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
+    
+    if (regionsSubscriberIdentifier) {
+        NSDictionary *subscribersByIdentifier = [self subscribersByIdentifier];
+        id<FSQRegionMonitoringSubscriber> regionSubscriber = subscribersByIdentifier[regionsSubscriberIdentifier];
+        if (regionSubscriber) {
+            if (regionSubscriber.shouldReceiveRegionMonitoringErrors
+                && [regionSubscriber respondsToSelector:@selector(monitoringDidFailForRegion:withError:)]) {
+                [regionSubscriber monitoringDidFailForRegion:region withError:error];
+            }
+        }
+        else {
+            // This region's subscriber is not registered, so we should stop monitoring it.
+            [self.locationManager stopMonitoringForRegion:region];
         }
     }
 }

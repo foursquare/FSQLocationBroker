@@ -140,6 +140,9 @@
 /**
  Add a new region monitoring subscriber to the broker.
  
+ If there were already monitored regions from a previous app launch that match this added subscribers identifier,
+ the broker will tell the subscriber to re-add these region to its list via the `addMonitoredRegion:` method.
+ 
  @param regionSubscriber Region monitoring subscriber to add. If this object is already in the broker's region 
  monitoring subscriber list this method does nothing. The subscriber will be retained by the broker.
 
@@ -150,6 +153,8 @@
 
 /**
  Remove a region monitoring subscriber from the broker.
+ 
+ This will stop monitoring for all regions that this subscriber was monitoring.
  
  @param regionSubscriber Region monitoring subscriber to remove. If this object is not currently in the broker's 
  region monitoring subscriber list this method does nothing.
@@ -163,10 +168,30 @@
  Updates the location services being requested from the system by the broker by checking the current list of
  region monitoring subscribers.
  
- This method is called automatically for you when a subscriber is added or removed, or when the relevant properties
+ This method is called automatically for you when a subscriber is added, or when the relevant properties
  on the subscribers change if they are KVO-compliant.
+ 
+ @note This will not remove regions being monitored if their subscriber ids do not match any known subscribers, as
+ those subscribers might be added later and repaired with their regions (eg after an app relaunch).
+ If you would like to forcibly synchronize the systems set of monitored regions with the current subscriber array, 
+ use `forceSyncRegionMonitorSubscribersWithSystem`
+ 
  */
 - (void)refreshRegionMonitoringSubscribers NS_REQUIRES_SUPER;
+
+/**
+ This will set the location services being request from the system by the broker to the exact set of regions 
+ monitored by the current array of subscribers.
+ 
+ If you have regions being monitored by other means, or monitored regions left over from a previous app launch that
+ have not yet been repaired with their subscribers, this will remove them.
+ 
+ This method is never called automatically by the broker. 
+ 
+ Under most circumstances you will want to use `refreshRegionMonitoringSubscribers` instead.
+ 
+ */
+- (void)forceSyncRegionMonitorSubscribersWithSystem NS_REQUIRES_SUPER;
 
 /**
  Calls through to the location managers requestStateForRegion: method.
@@ -456,6 +481,9 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
  (based on subscriber identifier) if they get out of sync (e.g. after an app restart).
  
  @param region A CLRegion to add to the subscriber's list of monitored regions.
+ 
+ @note If you would like to not continue monitoring this previously monitored region, you can simply do nothing
+ in this method. 
  */
 - (void)addMonitoredRegion:(CLRegion *)region;
 
@@ -465,6 +493,9 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
  @see [CLLocationManagerDelegate locationManager:didEnterRegion:]
  
  @param region The region that was entered.
+ 
+ @note If the system sends the broker a callback for a region which does not match any currently registered subscribers,
+ the region will be unmonitored.
  */
 - (void)didEnterRegion:(CLRegion *)region;
 
@@ -474,6 +505,9 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
  @see [CLLocationManagerDelegate locationManager:didExitRegion:]
  
  @param region The region that was exited.
+ 
+ @note If the system sends the broker a callback for a region which does not match any currently registered subscribers,
+ the region will be unmonitored.
  */
 - (void)didExitRegion:(CLRegion *)region;
 
