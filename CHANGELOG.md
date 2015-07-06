@@ -1,3 +1,13 @@
+## 1.1.2 (2015-07-06)
+
+Features:
+
+ - Add support for background location in iOS9
+
+Bugfixes:
+
+ - Many changes to how region subscribers work to fix issues. Re-connecting regions subscribers to monitored regions from previous app launches should now work as expected.
+
 ## 1.1.1 (2015-04-07)
 
 Bugfixes:

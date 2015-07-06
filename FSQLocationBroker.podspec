@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name      = 'FSQLocationBroker'
-  s.version   = '1.1.1'
+  s.version   = '1.1.2'
   s.platform  = :ios
   s.summary   = 'A centralized location manager for your app'
   s.homepage  = 'https://github.com/foursquare/FSQLocationBroker'
