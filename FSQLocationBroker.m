@@ -8,6 +8,7 @@
 
 static void *kLocationBrokerLocationSubscriberKVOContext = &kLocationBrokerLocationSubscriberKVOContext;
 static void *kLocationBrokerRegionMonitoringSubscriberKVOContext = &kLocationBrokerRegionMonitoringSubscriberKVOContext;
+static void *kLocationBrokerVisitSubscriberKVOContext = &kLocationBrokerVisitSubscriberKVOContext;
 
 // Helper functions for code readability and reuse
 BOOL applicationIsBackgrounded();
@@ -447,6 +448,12 @@ static Class sharedInstanceClass = nil;
     dispatch_async(self.serialQueue, ^{
         if (![self.visitSubscribers containsObject:visitSubscriber]) {
             self.visitSubscribers = [self.visitSubscribers setByAddingObject:visitSubscriber];
+            
+            [visitSubscriber addObserver:self
+                                 forKeyPath:NSStringFromSelector(@selector(shouldMonitorVisits))
+                                    options:0
+                                    context:kLocationBrokerVisitSubscriberKVOContext];
+            
             [self refreshVisitSubscribers];
         }
     });
@@ -455,9 +462,12 @@ static Class sharedInstanceClass = nil;
 - (void)removeVisitSubscriber:(NSObject<FSQVisitMonitoringSubscriber> *)visitSubscriber {
     dispatch_async(self.serialQueue, ^{
         if ([self.visitSubscribers containsObject:visitSubscriber]) {
+            [visitSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(shouldMonitorVisits))];
+            
             NSMutableSet *mutableVisitSubscribers = [self.visitSubscribers mutableCopy];
             [mutableVisitSubscribers removeObject:visitSubscriber];
             self.visitSubscribers = [mutableVisitSubscribers copy];
+            
             [self refreshVisitSubscribers];
         }
     });
@@ -631,6 +641,9 @@ static Class sharedInstanceClass = nil;
     }
     else if (context == kLocationBrokerRegionMonitoringSubscriberKVOContext) {
         [self refreshRegionMonitoringSubscribers];
+    }
+    else if (context == kLocationBrokerVisitSubscriberKVOContext) {
+        [self refreshVisitSubscribers];
     }
 }
 

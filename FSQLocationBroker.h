@@ -408,7 +408,7 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
 
 @protocol FSQVisitMonitoringSubscriber <NSObject>
 
-- (BOOL)shouldMonitorVisits;
+@property (nonatomic, readonly) BOOL shouldMonitorVisits;
 
 /**
  Visits will be forwarded to this method if this object has been added as a visit subscriber and shouldMonitorVisits
