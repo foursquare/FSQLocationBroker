@@ -25,6 +25,7 @@ BOOL subscriberWantsVisitMonitoring(NSObject<FSQVisitMonitoringSubscriber> *loca
 @property (atomic, readwrite) NSSet *locationSubscribers;
 @property (atomic, readwrite) NSSet *regionSubscribers;
 @property (atomic, readwrite) NSSet *visitSubscribers;
+@property (nonatomic, copy) CLLocation *currentLocation;
 
 // Private
 @property (nonatomic) CLLocationManager *locationManager;
@@ -76,6 +77,8 @@ static Class sharedInstanceClass = nil;
 - (id)init {
     if ((self = [super init])) {
         self.locationManager = [CLLocationManager new];
+        
+        self.currentLocation = self.locationManager.location;
         self.locationManager.delegate = self;
 
         self.locationSubscribers = [NSSet new];
@@ -131,10 +134,6 @@ static Class sharedInstanceClass = nil;
             [self.locationManager stopRangingBeaconsInRegion:region];
         }
     });
-}
-
-- (CLLocation *)currentLocation {
-    return self.locationManager.location;
 }
 
 - (CLLocationAccuracy)currentAccuracy {
@@ -514,6 +513,16 @@ static Class sharedInstanceClass = nil;
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     BOOL isBackgrounded = applicationIsBackgrounded();
+    CLLocation *newestLocation = nil;
+    for (CLLocation *location in locations) {
+        if (!newestLocation ||
+            [newestLocation.timestamp earlierDate:location.timestamp] == newestLocation.timestamp) {
+            newestLocation = location;
+        }
+    }
+    
+    self.currentLocation = newestLocation;
+    
     
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
         if (subscriberShouldReceiveLocationUpdates(locationSubscriber)
@@ -624,6 +633,10 @@ static Class sharedInstanceClass = nil;
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
     // Refresh so it will re-account for non-background enabled subscribers
     [self refreshLocationSubscribers];
+    
+    if ([[self class] isAuthorized]) {
+        self.currentLocation = self.locationManager.location;
+    }
 }
 
 #pragma mark - Authorization -
