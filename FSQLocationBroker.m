@@ -77,13 +77,6 @@ static Class sharedInstanceClass = nil;
     if ((self = [super init])) {
         self.locationManager = [CLLocationManager new];
         self.locationManager.delegate = self;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
-        if ([self.locationManager respondsToSelector:@selector(allowsBackgroundLocationUpdates)]) {
-            // We handle background location updating ourselves so we can just set the system
-            // to always be enabled and it will work as expected.
-            self.locationManager.allowsBackgroundLocationUpdates = YES;
-        }
-#endif
 
         self.locationSubscribers = [NSSet new];
         self.regionSubscribers = [NSSet new];
@@ -211,6 +204,22 @@ static Class sharedInstanceClass = nil;
     return NO;
 }
 
+- (BOOL)shouldAllowBackgroundLocationUpdates {
+    NSArray *backgroundModes = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
+    BOOL backgroundLocationModeEnabled = [backgroundModes containsObject:@"location"];
+    BOOL hasBackgroundLocationPermission = ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways);
+    
+    BOOL subscriberWantsBackgroundLocationUpdates = NO;
+    for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
+        if (subscriberWantsContinuousLocation(locationSubscriber) && subscriberShouldRunInBackground(locationSubscriber)) {
+            subscriberWantsBackgroundLocationUpdates = YES;
+            break;
+        }
+    }
+    
+    return backgroundLocationModeEnabled && hasBackgroundLocationPermission && subscriberWantsBackgroundLocationUpdates;
+}
+
 - (BOOL)shouldMonitorVisits {
     
     for (NSObject<FSQVisitMonitoringSubscriber> *locationSubscriber in self.visitSubscribers) {
@@ -286,6 +295,13 @@ static Class sharedInstanceClass = nil;
         [self.locationManager stopUpdatingLocation];
         self.isUpdatingLocation = NO;
     }
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
+    // Should allow background location
+    if ([self.locationManager respondsToSelector:@selector(allowsBackgroundLocationUpdates)]) {
+        self.locationManager.allowsBackgroundLocationUpdates = [self shouldAllowBackgroundLocationUpdates];
+    }
+#endif
 }
 
 #pragma mark RegionMonitoringSubscribers
