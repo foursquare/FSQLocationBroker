@@ -1,3 +1,17 @@
+## 1.2.0 (2015-09-10)
+
+Features:
+
+ - Background location updates are now automatically disabled if your bundle does not have the correct background mode or if the user has only granted you "When in Use" permissions.
+ - Improved handling of iOS 9's `allowsBackgroundLocationUpdates` property.
+ - Changes to `FSQVisitMonitoringSubscriber`'s `shouldMonitorVisits` property are now monitored through KVO.
+ - For performance reasons, the broker now caches its own copy of `currentLocation` instead of passing through to the property on `CLLocationManager`.
+
+Bugfixes:
+
+ - Fixes crash when `allowsBackgroundLocationUpdates` was incorrectly enabled in an app without the correct background mode.
+
+
 ## 1.1.2 (2015-07-06)
 
 Features:
