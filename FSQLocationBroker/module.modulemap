@@ -4,5 +4,4 @@ framework module FSQLocationBroker {
     header "FSQSingleLocationSubscriber.h"
     
     export *
-    module * { export * }
 }
