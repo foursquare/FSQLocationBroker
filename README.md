@@ -17,7 +17,14 @@ Note: A test project is included but it is used for build testing only - an exam
 
 Setup
 =====
-The recommended way to integrate FSQLocationBroker with your app is by adding its framework files to your project. You can download the latest version of the frameworks directly from Github's releases page, or use [Carthage](https://github.com/Carthage/Carthage) to download/build them (add `github "foursquare/FSQLocationBroker"` to your Cartfile). 
+If your minimum OS version requirement is 8.0 or greater, the recommended way to integrate FSQLocationBroker with your app is by adding its framework files to your project. You can download the latest version of the frameworks directly from Github's releases page, or use [Carthage](https://github.com/Carthage/Carthage) to download/build them (add `github "foursquare/FSQLocationBroker"` to your Cartfile). 
+
+If you need to support older versions of iOS, you cannot use dynamic libraries. In that case, we recommend you use Cocoapods to integrate FSQLocationBroker, or simply copy the four source files into your own project.
+
+To use FSQLocationBroker in an app extension, you must link your extension against the 
+**FSQLocationBroker_AppExtension.framework** framework instead of the standard version. If you are compiling the source yourself instead of using a pre-built framework, you must make sure the `FSQ_IS_APP_EXTENSION` preprocessor macro is defined when building for an app extesion.
+
+FSQLocationBroker cannot currently be used in watchOS 2.0 apps due to its more limited version of the CoreLocation framework.
 
 If you would like to use a custom subclass of FSQLocationBroker in your app, you should set your subclass's class using the `setSharedClass:` method early on in your app life cycle, before the broker singleton is created (like in your app delegate's `application:didFinishLaunchingWithOptions:`).
 
