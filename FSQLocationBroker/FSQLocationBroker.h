@@ -4,8 +4,8 @@
 //  Copyright (c) 2014 foursquare. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+@import Foundation;
+@import CoreLocation;
 
 @protocol FSQLocationSubscriber, FSQRegionMonitoringSubscriber;
 

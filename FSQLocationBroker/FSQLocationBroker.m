@@ -5,7 +5,7 @@
 //
 
 #import "FSQLocationBroker.h"
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 static void *kLocationBrokerLocationSubscriberKVOContext = &kLocationBrokerLocationSubscriberKVOContext;
 static void *kLocationBrokerRegionMonitoringSubscriberKVOContext = &kLocationBrokerRegionMonitoringSubscriberKVOContext;
