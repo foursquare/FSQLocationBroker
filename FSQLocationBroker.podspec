@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
                   'Anoop Ranganath' => 'https://twitter.com/anoopr' }             
   s.source    = { :git => 'https://github.com/foursquare/FSQLocationBroker.git',
                   :tag => "v#{s.version}" }
-  s.source_files  = '*.{h,m}'
+  s.source_files  = 'FSQLocationBroker/*.{h,m}'
   s.frameworks    = 'CoreLocation'
   s.requires_arc  = true
 end
