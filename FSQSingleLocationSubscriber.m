@@ -102,10 +102,10 @@
 }
 
 - (void)cutoffTimerFired:(NSTimer *)cutoffTimer {
+    [self stopListening];
     if (self.onCompletion) {
         self.onCompletion(NO, self.bestLocationReceived, @(-[self.startTime timeIntervalSinceNow]), nil);
     }
-    [self stopListening];
 }
 
 - (BOOL)isListening {
@@ -133,10 +133,10 @@
 - (void)locationManagerDidUpdateLocations:(NSArray *)locations {
     for (CLLocation *location in locations) {
         if (location.horizontalAccuracy <= self.maximumAcceptableAccuracy) {
+            [self stopListening];
             if (self.onCompletion) {
                 self.onCompletion(YES, location, @(-[self.startTime timeIntervalSinceNow]), nil);
             }
-            [self stopListening];
             return;
         }
         else if (location.horizontalAccuracy < self.bestLocationReceived.horizontalAccuracy) {
@@ -147,10 +147,10 @@
 
 - (void)locationManagerFailedWithError:(NSError *)error {
     if (kCLErrorLocationUnknown != error.code) {
+        [self stopListening];
         if (self.onCompletion) {
             self.onCompletion(NO, self.bestLocationReceived, @(-[self.startTime timeIntervalSinceNow]), error);
         }
-        [self stopListening];
     }
 }
 
