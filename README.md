@@ -1,6 +1,8 @@
 FSQLocationBroker
 =================
 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
 A centralized location manager for your app.
 
 Overview
@@ -15,7 +17,7 @@ Note: A test project is included but it is used for build testing only - an exam
 
 Setup
 =====
-FSQLocationBroker has no dependencies other than Foundation and CoreLocation. Simply add the files to your project and you are ready to go.
+The recommended way to integrate FSQLocationBroker with your app is by adding its framework files to your project. You can download the latest version of the frameworks directly from Github's releases page, or use [Carthage](https://github.com/Carthage/Carthage) to download/build them (add `github "foursquare/FSQLocationBroker"` to your Cartfile). 
 
 If you would like to use a custom subclass of FSQLocationBroker in your app, you should set your subclass's class using the `setSharedClass:` method early on in your app life cycle, before the broker singleton is created (like in your app delegate's `application:didFinishLaunchingWithOptions:`).
 
