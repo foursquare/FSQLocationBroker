@@ -12,6 +12,13 @@
 		F14AD59C1BE00CD600D59271 /* FSQSingleLocationSubscriber.h in Headers */ = {isa = PBXBuildFile; fileRef = F14AD5961BE00CD600D59271 /* FSQSingleLocationSubscriber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F14AD59D1BE00CD600D59271 /* FSQSingleLocationSubscriber.m in Sources */ = {isa = PBXBuildFile; fileRef = F14AD5971BE00CD600D59271 /* FSQSingleLocationSubscriber.m */; };
 		F14AD5A01BE00DA500D59271 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F14AD59F1BE00DA500D59271 /* UIKit.framework */; };
+		F14AD5AF1BE027FE00D59271 /* FSQLocationBroker.m in Sources */ = {isa = PBXBuildFile; fileRef = F14AD5951BE00CD600D59271 /* FSQLocationBroker.m */; };
+		F14AD5B01BE027FE00D59271 /* FSQSingleLocationSubscriber.m in Sources */ = {isa = PBXBuildFile; fileRef = F14AD5971BE00CD600D59271 /* FSQSingleLocationSubscriber.m */; };
+		F14AD5B21BE027FE00D59271 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F14AD59F1BE00DA500D59271 /* UIKit.framework */; };
+		F14AD5B31BE027FE00D59271 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199B91BE00C59009DB90D /* Foundation.framework */; };
+		F14AD5B41BE027FE00D59271 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199B71BE00C54009DB90D /* CoreLocation.framework */; };
+		F14AD5B61BE027FE00D59271 /* FSQSingleLocationSubscriber.h in Headers */ = {isa = PBXBuildFile; fileRef = F14AD5961BE00CD600D59271 /* FSQSingleLocationSubscriber.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F14AD5B71BE027FE00D59271 /* FSQLocationBroker.h in Headers */ = {isa = PBXBuildFile; fileRef = F14AD5941BE00CD600D59271 /* FSQLocationBroker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F18199B81BE00C54009DB90D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199B71BE00C54009DB90D /* CoreLocation.framework */; };
 		F18199BA1BE00C59009DB90D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199B91BE00C59009DB90D /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -24,12 +31,23 @@
 		F14AD5981BE00CD600D59271 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F14AD5991BE00CD600D59271 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		F14AD59F1BE00DA500D59271 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		F14AD5BC1BE027FE00D59271 /* FSQLocationBroker_AppExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FSQLocationBroker_AppExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F18199A31BE0052E009DB90D /* FSQLocationBroker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FSQLocationBroker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F18199B71BE00C54009DB90D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		F18199B91BE00C59009DB90D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F14AD5B11BE027FE00D59271 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F14AD5B21BE027FE00D59271 /* UIKit.framework in Frameworks */,
+				F14AD5B31BE027FE00D59271 /* Foundation.framework in Frameworks */,
+				F14AD5B41BE027FE00D59271 /* CoreLocation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F181999F1BE0052E009DB90D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -55,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				F18199A31BE0052E009DB90D /* FSQLocationBroker.framework */,
+				F14AD5BC1BE027FE00D59271 /* FSQLocationBroker_AppExtension.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -78,6 +97,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		F14AD5B51BE027FE00D59271 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F14AD5B61BE027FE00D59271 /* FSQSingleLocationSubscriber.h in Headers */,
+				F14AD5B71BE027FE00D59271 /* FSQLocationBroker.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F18199A01BE0052E009DB90D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -90,6 +118,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		F14AD5AD1BE027FE00D59271 /* FSQLocationBroker_AppExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F14AD5B91BE027FE00D59271 /* Build configuration list for PBXNativeTarget "FSQLocationBroker_AppExtension" */;
+			buildPhases = (
+				F14AD5AE1BE027FE00D59271 /* Sources */,
+				F14AD5B11BE027FE00D59271 /* Frameworks */,
+				F14AD5B51BE027FE00D59271 /* Headers */,
+				F14AD5B81BE027FE00D59271 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FSQLocationBroker_AppExtension;
+			productName = FSQLocationBroker;
+			productReference = F14AD5BC1BE027FE00D59271 /* FSQLocationBroker_AppExtension.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		F18199A21BE0052E009DB90D /* FSQLocationBroker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F18199AB1BE0052E009DB90D /* Build configuration list for PBXNativeTarget "FSQLocationBroker" */;
@@ -135,11 +181,19 @@
 			projectRoot = "";
 			targets = (
 				F18199A21BE0052E009DB90D /* FSQLocationBroker */,
+				F14AD5AD1BE027FE00D59271 /* FSQLocationBroker_AppExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F14AD5B81BE027FE00D59271 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F18199A11BE0052E009DB90D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -150,6 +204,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F14AD5AE1BE027FE00D59271 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F14AD5AF1BE027FE00D59271 /* FSQLocationBroker.m in Sources */,
+				F14AD5B01BE027FE00D59271 /* FSQSingleLocationSubscriber.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F181999E1BE0052E009DB90D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -162,6 +225,40 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		F14AD5BA1BE027FE00D59271 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = FSQLocationBroker/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foursquare.FSQLocationBroker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F14AD5BB1BE027FE00D59271 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = FSQLocationBroker/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foursquare.FSQLocationBroker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		F18199A91BE0052E009DB90D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -190,8 +287,9 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"FSQ_IS_APP_EXTENSION=1",
+					"DEBUG=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -199,7 +297,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULEMAP_FILE = FSQLocationBroker/module.modulemap;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -235,13 +333,17 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"FSQ_IS_APP_EXTENSION=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULEMAP_FILE = FSQLocationBroker/module.modulemap;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -287,6 +389,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F14AD5B91BE027FE00D59271 /* Build configuration list for PBXNativeTarget "FSQLocationBroker_AppExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F14AD5BA1BE027FE00D59271 /* Debug */,
+				F14AD5BB1BE027FE00D59271 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F181999D1BE0052E009DB90D /* Build configuration list for PBXProject "FSQLocationBroker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
