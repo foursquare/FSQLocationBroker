@@ -29,7 +29,7 @@
  
  @see [CLLocationManager location]
  */
-@property (nonatomic, readonly, copy) CLLocation *currentLocation;
+@property (atomic, readonly, copy) CLLocation *currentLocation;
 
 /**
  The most accuracy we are currently requesting from the broker's CLLocationManager.
