@@ -155,7 +155,15 @@
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
-    [self cutoffTimerFired:self.cutoffTimer];
+    /**
+     NSNotificationCenter maintains non-strong references to objects. 
+     If it calls this method, when we stopListening later and remove ourself from the broker,
+     it is possible our retain count will immediately go to 0 mid-method execution if no one
+     else is retaining us, so we have to make sure we have a strong reference to ourself here
+     so we don't crash.
+     */
+    __typeof(self) strongSelf = self;
+    [strongSelf cutoffTimerFired:strongSelf.cutoffTimer];
 }
 
 - (void)dealloc {
