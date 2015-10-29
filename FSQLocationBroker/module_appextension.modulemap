@@ -1,0 +1,7 @@
+framework module FSQLocationBroker_AppExtension {
+    
+    header "FSQLocationBroker.h"
+    header "FSQSingleLocationSubscriber.h"
+    
+    export *
+}

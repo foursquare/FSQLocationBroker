@@ -1,3 +1,12 @@
+## 1.3.0 (2015-10-27)
+
+Features:
+
+ - Added Carthage/framework support. There is now an Xcode project that has schemes to build two frameworks (one for regular apps, one that supports only app-extension apis). The recommended way to use FSQLocationBroker is now to add these frameworks to your project, either by manually downloading prebuilt versions from the Github releases page, or by adding the repo to your Cartfile with Carthage.
+ - `FSQSingleLocationSubscriber` now calls `stopListening` before executing callback blocks instead of after, so that its state will be correct if you check it from those callbacks.
+ - The `currentLocation` property is now atomic instead of nonatomic.
+
+
 ## 1.2.0 (2015-09-10)
 
 Features:

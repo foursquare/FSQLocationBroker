@@ -5,6 +5,7 @@
 //
 
 #import "FSQSingleLocationSubscriber.h"
+@import UIKit;
 
 @interface FSQSingleLocationSubscriber ()
 @property (nonatomic) NSTimer *cutoffTimer;

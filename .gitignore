@@ -22,3 +22,5 @@ profile
 
 # finder
 .DS_Store
+
+Carthage
