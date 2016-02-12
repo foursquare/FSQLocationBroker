@@ -21,9 +21,9 @@ Note: A test project is included but it is used for build testing only - an exam
 If your minimum iOS version requirement is 8.0 or greater, Carthage is the recommended way to integrate FSQLocationBroker with your app.
 Add `github "foursquare/FSQLocationBroker"` to your Cartfile and follow the instructions from [Carthage's README](https://github.com/Carthage/Carthage) for adding Carthage-built frameworks to your project.
 
-## Cocoapods Installation
+## CocoaPods Installation
 
-If you use Cocoapods, you can add `pod 'FSQLocationBroker', '~> [desired version here]'` to your Podfile. Further instructions on setting up and using Cocoapods can be found on [their website](https://cocoapods.org)
+If you use CocoaPods, you can add `pod 'FSQLocationBroker', '~> [desired version here]'` to your Podfile. Further instructions on setting up and using CocoaPods can be found on [their website](https://cocoapods.org)
 
 ## Manual Installation
 
