@@ -90,4 +90,4 @@ See the comments in FSQSingleLocationSubscriber.h for more in depth documentatio
 
 The classes were initially developed by Foursquare Labs for internal use. 
 
-FSQLocationBroker was originally written by Anoop Ranganath ([@anoopr](https://twitter.com/anoopr)), Adam Alix ([@adamalix](https://twitter.com/adamalix)), and Brian Dorfman ([@bdorfman](https://twitter.com/bdorfman)). It is currently maintained by Sam Grossberg ([@samgro](https://github.com/samgro).
+FSQLocationBroker was originally written by Anoop Ranganath ([@anoopr](https://twitter.com/anoopr)), Adam Alix ([@adamalix](https://twitter.com/adamalix)), and Brian Dorfman ([@bdorfman](https://twitter.com/bdorfman)). It is currently maintained by Sam Grossberg ([@samgro](https://github.com/samgro)).
