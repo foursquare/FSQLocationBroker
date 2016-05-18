@@ -14,7 +14,7 @@
  @param location    A location matching the specifications you set or the location with the best horizontal 
                     accuracy that the subscriber was able to get within the cutoff time. 
  
-                    This location will not be older the the requested maximumAcceptableRecency.
+                    This location will not be older than the requested maximumAcceptableRecency.
  @param elapsedTime The amount of time the subscriber took to get your location (boxed NSTimeInterval). 
                     If there was already an acceptable location on the broker and the block thus is being 
                     called synchronously, this value will be nil.
