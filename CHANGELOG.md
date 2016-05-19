@@ -1,3 +1,10 @@
+## 1.3.1 (2016-05-19)
+
+Features:
+
+- Fix bug where a subscriber running in the background could fire its completion block multiple times.
+- Fix bug where the completion block might not return a location if a location with the maximum desired accuracy wasn't found.
+
 ## 1.3.0 (2015-10-27)
 
 Features:
