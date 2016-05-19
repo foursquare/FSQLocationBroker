@@ -140,7 +140,7 @@
             }
             return;
         }
-        else if (location.horizontalAccuracy < self.bestLocationReceived.horizontalAccuracy) {
+        else if (!self.bestLocationReceived || location.horizontalAccuracy < self.bestLocationReceived.horizontalAccuracy) {
             self.bestLocationReceived = location;
         }
     }
