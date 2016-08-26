@@ -85,7 +85,7 @@ typedef void (^FSQSingleLocSubCompletionBlock)(BOOL didSucceed, CLLocation *loca
  @param maximumAcceptableAccuracy 
             The first received location with a horizontal accuracy less than or equal to this value will stop the 
             subscriber and be returned via the completion block.
- @param maximumAcceptableLocationRecency 
+ @param maximumAcceptableRecency
             If the location broker already has a location under your max accuracy
             it will immediately return if the location is no older than this time interval.
  @param cutoffTimeInterval

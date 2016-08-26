@@ -26,7 +26,7 @@ BOOL subscriberWantsVisitMonitoring(NSObject<FSQVisitMonitoringSubscriber> *loca
 @property (atomic, readwrite) NSSet *locationSubscribers;
 @property (atomic, readwrite) NSSet *regionSubscribers;
 @property (atomic, readwrite) NSSet *visitSubscribers;
-@property (nonatomic, copy) CLLocation *currentLocation;
+@property (atomic, copy) CLLocation *currentLocation;
 
 // Private
 @property (nonatomic) CLLocationManager *locationManager;
