@@ -514,16 +514,17 @@ static Class sharedInstanceClass = nil;
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     BOOL isBackgrounded = applicationIsBackgrounded();
-    CLLocation *newestLocation = nil;
+    CLLocation *mostRecentLocation = [locations firstObject];
     for (CLLocation *location in locations) {
-        if (!newestLocation ||
-            [newestLocation.timestamp earlierDate:location.timestamp] == newestLocation.timestamp) {
-            newestLocation = location;
+        if ([mostRecentLocation.timestamp laterDate:location.timestamp] == location.timestamp) {
+            mostRecentLocation = location;
         }
     }
     
-    self.currentLocation = newestLocation;
-    
+    // only update currentLocation if mostRecentLocation happened after currentLocation
+    if ([self.currentLocation.timestamp laterDate:mostRecentLocation.timestamp] == mostRecentLocation.timestamp) {
+        self.currentLocation = mostRecentLocation;
+    }
     
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
         if (subscriberShouldReceiveLocationUpdates(locationSubscriber)
