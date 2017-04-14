@@ -211,7 +211,7 @@ static Class sharedInstanceClass = nil;
     
     BOOL subscriberWantsBackgroundLocationUpdates = NO;
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
-        if (subscriberWantsContinuousLocation(locationSubscriber) && subscriberShouldRunInBackground(locationSubscriber)) {
+        if (subscriberShouldRunInBackground(locationSubscriber)) {
             subscriberWantsBackgroundLocationUpdates = YES;
             break;
         }
