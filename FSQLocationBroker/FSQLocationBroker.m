@@ -516,13 +516,13 @@ static Class sharedInstanceClass = nil;
     BOOL isBackgrounded = applicationIsBackgrounded();
     CLLocation *mostRecentLocation = [locations firstObject];
     for (CLLocation *location in locations) {
-        if ([mostRecentLocation.timestamp laterDate:location.timestamp] == location.timestamp) {
+        if ([mostRecentLocation.timestamp compare:location.timestamp] == NSOrderedAscending) {
             mostRecentLocation = location;
         }
     }
     
     // only update if currentLocation is not set or if mostRecentLocation happened after currentLocation
-    if (!self.currentLocation || [self.currentLocation.timestamp laterDate:mostRecentLocation.timestamp] == mostRecentLocation.timestamp) {
+    if (!self.currentLocation || [self.currentLocation.timestamp compare:mostRecentLocation.timestamp] == NSOrderedAscending) {
         self.currentLocation = mostRecentLocation;
     }
     
