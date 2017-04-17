@@ -521,8 +521,8 @@ static Class sharedInstanceClass = nil;
         }
     }
     
-    // only update currentLocation if mostRecentLocation happened after currentLocation
-    if ([self.currentLocation.timestamp laterDate:mostRecentLocation.timestamp] == mostRecentLocation.timestamp) {
+    // only update if currentLocation is not set or if mostRecentLocation happened after currentLocation
+    if (!self.currentLocation || [self.currentLocation.timestamp laterDate:mostRecentLocation.timestamp] == mostRecentLocation.timestamp) {
         self.currentLocation = mostRecentLocation;
     }
     
