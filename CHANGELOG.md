@@ -1,3 +1,9 @@
+## 1.3.4 (2017-04-17)
+
+Features:
+
+- Fix for bug when `currentLocation` has not been set yet.
+
 ## 1.3.3 (2017-04-17)
 
 Features:
