@@ -1,3 +1,16 @@
+## 1.4.0 (2017-04-18)
+
+Features:
+
+- Ensure `currentLocation` is most recent location.
+- Separating `subscriberShouldRunInBackground` from needing to be a continuous location subscriber.
+
+## 1.3.2 (2017-04-06)
+
+Features:
+
+- Fix modulemap bug for Xcode 8 builds.
+
 ## 1.3.1 (2016-05-19)
 
 Features:

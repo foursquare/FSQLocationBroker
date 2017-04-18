@@ -211,7 +211,7 @@ static Class sharedInstanceClass = nil;
     
     BOOL subscriberWantsBackgroundLocationUpdates = NO;
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
-        if (subscriberWantsContinuousLocation(locationSubscriber) && subscriberShouldRunInBackground(locationSubscriber)) {
+        if (subscriberShouldRunInBackground(locationSubscriber)) {
             subscriberWantsBackgroundLocationUpdates = YES;
             break;
         }
@@ -514,16 +514,17 @@ static Class sharedInstanceClass = nil;
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     BOOL isBackgrounded = applicationIsBackgrounded();
-    CLLocation *newestLocation = nil;
+    CLLocation *mostRecentLocation = [locations firstObject];
     for (CLLocation *location in locations) {
-        if (!newestLocation ||
-            [newestLocation.timestamp earlierDate:location.timestamp] == newestLocation.timestamp) {
-            newestLocation = location;
+        if ([mostRecentLocation.timestamp compare:location.timestamp] == NSOrderedAscending) {
+            mostRecentLocation = location;
         }
     }
     
-    self.currentLocation = newestLocation;
-    
+    // only update if currentLocation is not set or if mostRecentLocation happened after currentLocation
+    if (!self.currentLocation || [self.currentLocation.timestamp compare:mostRecentLocation.timestamp] == NSOrderedAscending) {
+        self.currentLocation = mostRecentLocation;
+    }
     
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
         if (subscriberShouldReceiveLocationUpdates(locationSubscriber)
