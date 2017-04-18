@@ -66,7 +66,7 @@
 - (void)testCurrentLocationWithOutOfOrderDates {
     NSComparisonResult result;
 
-    NSArray<CLLocation *> *locations = @[self.location3, self.location1, self.location2];
+    NSArray<CLLocation *> *locations = @[self.location2, self.location3, self.location1];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations];
     
@@ -85,7 +85,7 @@
     XCTAssert(result == NSOrderedSame, @"expected most recent location");
 }
 
-- (void)testCurrentLocationWithInOrderDatesMultipleCalls {
+- (void)testCurrentLocationIsOverwrittenWithNewerLocation {
     NSComparisonResult result;
 
     NSArray<CLLocation *> *locations1 = @[self.location1];
@@ -93,73 +93,39 @@
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations1];
     
     result = [self.locationBroker.currentLocation.timestamp compare:self.location1.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    XCTAssert(result == NSOrderedSame, @"expected to overwrite current location with location1");
     
     NSArray<CLLocation *> *locations2 = @[self.location2];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations2];
     
     result = [self.locationBroker.currentLocation.timestamp compare:self.location2.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
-    
-    NSArray<CLLocation *> *locations3 = @[self.location3];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations3];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    XCTAssert(result == NSOrderedSame, @"expected to overwrite current location with location2");
 }
 
-- (void)testCurrentLocationWithOutOfOrderDatesMultipleCalls  {
+- (void)testCurrentLocationIsNotOverwrittenWithOlderLocation  {
     NSComparisonResult result;
-
-    NSArray<CLLocation *> *locations2 = @[self.location2];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations2];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location2.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
     
     NSArray<CLLocation *> *locations3 = @[self.location3];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations3];
     
     result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    XCTAssert(result == NSOrderedSame, @"expected to overwrite current location with location3");
     
     NSArray<CLLocation *> *locations1 = @[self.location1];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations1];
     
     result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    XCTAssert(result == NSOrderedSame, @"expected NOT to overwrite current location");
 }
 
-- (void)testCurrentLocationWithReverseDatesMultipleCalls {
-    NSComparisonResult result;
-
-    NSArray<CLLocation *> *locations3 = @[self.location3];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations3];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
-    
-    NSArray<CLLocation *> *locations2 = @[self.location2];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations2];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
-    
-    NSArray<CLLocation *> *locations1 = @[self.location1];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations1];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
-}
-
+/**
+ *  When 2 locations have the same timestamps, the winner is
+ *  determined by which location is processed first
+ *
+ */
 - (void)testCurrentLocationWithSameTimestamp {
     CLLocationCoordinate2D sfCoordinates = CLLocationCoordinate2DMake(37.7749, -122.4194);
     CLLocation *sfLocation = [[CLLocation alloc] initWithCoordinate:sfCoordinates altitude:self.location1.altitude horizontalAccuracy:self.location1.horizontalAccuracy verticalAccuracy:self.location1.verticalAccuracy timestamp:self.location1.timestamp];
