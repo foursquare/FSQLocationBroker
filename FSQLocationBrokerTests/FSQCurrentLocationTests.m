@@ -9,8 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "FSQLocationBroker.h"
-
-#import <CoreLocation/CoreLocation.h>
+#import "FSQTestingHelper.h"
 
 @interface FSQCurrentLocationTests : XCTestCase
 
@@ -37,13 +36,9 @@
     NSDate *beforeFutureDate = [futureDate dateByAddingTimeInterval:-100];
     NSDate *afterFutureDate = [futureDate dateByAddingTimeInterval:603];
     
-    CLLocationCoordinate2D pennStationCoordinates = CLLocationCoordinate2DMake(40.7484, -73.9857);
-    CLLocationCoordinate2D empireStateBuildingCoordinates = CLLocationCoordinate2DMake(40.7484, -73.9857);
-    CLLocationCoordinate2D foursquareNYCCoordinates = CLLocationCoordinate2DMake(40.7592, -73.9846);
-
-    self.location1 = [[CLLocation alloc] initWithCoordinate:pennStationCoordinates altitude:0 horizontalAccuracy:125 verticalAccuracy:0 timestamp:beforeFutureDate];
-    self.location2 = [[CLLocation alloc] initWithCoordinate:empireStateBuildingCoordinates altitude:0 horizontalAccuracy:65 verticalAccuracy:0 timestamp:futureDate];
-    self.location3 = [[CLLocation alloc] initWithCoordinate:foursquareNYCCoordinates altitude:0 horizontalAccuracy:5 verticalAccuracy:0 timestamp:afterFutureDate];
+    self.location1 = [[CLLocation alloc] initWithCoordinate:[FSQTestingHelper pennStationCoordinates] altitude:0 horizontalAccuracy:125 verticalAccuracy:0 timestamp:beforeFutureDate];
+    self.location2 = [[CLLocation alloc] initWithCoordinate:[FSQTestingHelper empireStateBuildingCoordinates] altitude:0 horizontalAccuracy:65 verticalAccuracy:0 timestamp:futureDate];
+    self.location3 = [[CLLocation alloc] initWithCoordinate:[FSQTestingHelper foursquareNYCCoordinates] altitude:0 horizontalAccuracy:5 verticalAccuracy:0 timestamp:afterFutureDate];
 }
 
 - (void)tearDown {
@@ -52,73 +47,90 @@
     [super tearDown];
 }
 
-- (void)testCurrentLocationWithInOrderDates {
-    NSComparisonResult result;
+- (void)testDateEqualityMacros {
+    NSDate *date1 = [NSDate dateWithTimeIntervalSinceReferenceDate:0];
+    NSDate *otherDate1 = [date1 dateByAddingTimeInterval:0];
+    NSDate *date2 = [date1 dateByAddingTimeInterval:1];
     
+    // Test same object
+    FSQAssertEqualDates(date1, date1);
+    
+    // Test same dates
+    FSQAssertEqualDates(date1, otherDate1);
+    
+    FSQAssertNotEqualDates(date1, date2);
+}
+
+- (void)testCoordinateEqualityMacros {
+    CLLocationCoordinate2D coordinate1 = [FSQTestingHelper foursquareNYCCoordinates];
+    CLLocationCoordinate2D otherCoordinate1 = [FSQTestingHelper foursquareNYCCoordinates];
+    CLLocationCoordinate2D coordinate2 = [FSQTestingHelper sfCoordinates];
+    
+    // Test same struct
+    FSQAssertEqualCoordinates(coordinate1, coordinate1);
+    
+    // Test same coordinates
+    FSQAssertEqualCoordinates(coordinate1, otherCoordinate1);
+    
+    FSQAssertNotEqualCoordinates(coordinate1, coordinate2);
+}
+
+- (void)testCurrentLocationWithInOrderDates {
     NSArray<CLLocation *> *locations = @[self.location1, self.location2, self.location3];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations];
     
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    // Expected most recent location
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location3.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location3.coordinate);
 }
 
 - (void)testCurrentLocationWithOutOfOrderDates {
-    NSComparisonResult result;
-
     NSArray<CLLocation *> *locations = @[self.location2, self.location3, self.location1];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations];
     
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    // Expected most recent location
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location3.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location3.coordinate);
 }
 
 - (void)testCurrentLocationWithReverseDates {
-    NSComparisonResult result;
-
     NSArray<CLLocation *> *locations = @[self.location3, self.location2, self.location1];
     
     [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations];
     
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected most recent location");
+    // Expected most recent location
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location3.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location3.coordinate);
 }
 
 - (void)testCurrentLocationIsOverwrittenWithNewerLocation {
-    NSComparisonResult result;
-
-    NSArray<CLLocation *> *locations1 = @[self.location1];
+    // Expected to overwrite current location with location1
+    [self.locationBroker locationManager:self.locationManger didUpdateLocations:@[self.location1]];
     
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations1];
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location1.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location1.coordinate);
     
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location1.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected to overwrite current location with location1");
+    // Expected to overwrite current location with location2
+    [self.locationBroker locationManager:self.locationManger didUpdateLocations:@[self.location2]];
     
-    NSArray<CLLocation *> *locations2 = @[self.location2];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations2];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location2.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected to overwrite current location with location2");
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location2.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location2.coordinate);
 }
 
 - (void)testCurrentLocationIsNotOverwrittenWithOlderLocation  {
-    NSComparisonResult result;
+    // Expected to overwrite current location with location3
+    [self.locationBroker locationManager:self.locationManger didUpdateLocations:@[self.location3]];
     
-    NSArray<CLLocation *> *locations3 = @[self.location3];
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location3.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location3.coordinate);
+
+    // Expected NOT to overwrite current location
+    [self.locationBroker locationManager:self.locationManger didUpdateLocations:@[self.location1]];
     
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations3];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected to overwrite current location with location3");
-    
-    NSArray<CLLocation *> *locations1 = @[self.location1];
-    
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations1];
-    
-    result = [self.locationBroker.currentLocation.timestamp compare:self.location3.timestamp];
-    XCTAssert(result == NSOrderedSame, @"expected NOT to overwrite current location");
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location3.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location3.coordinate);
 }
 
 /**
@@ -127,15 +139,13 @@
  *
  */
 - (void)testCurrentLocationWithSameTimestamp {
-    CLLocationCoordinate2D sfCoordinates = CLLocationCoordinate2DMake(37.7749, -122.4194);
-    CLLocation *sfLocation = [[CLLocation alloc] initWithCoordinate:sfCoordinates altitude:self.location1.altitude horizontalAccuracy:self.location1.horizontalAccuracy verticalAccuracy:self.location1.verticalAccuracy timestamp:self.location1.timestamp];
+    CLLocation *sfLocation = [[CLLocation alloc] initWithCoordinate:[FSQTestingHelper sfCoordinates] altitude:self.location1.altitude horizontalAccuracy:self.location1.horizontalAccuracy verticalAccuracy:self.location1.verticalAccuracy timestamp:self.location1.timestamp];
     
-    NSArray<CLLocation *> *locations3 = @[self.location1, sfLocation];
+    [self.locationBroker locationManager:self.locationManger didUpdateLocations: @[self.location1, sfLocation]];
     
-    [self.locationBroker locationManager:self.locationManger didUpdateLocations:locations3];
-    
-    XCTAssertEqual(self.locationBroker.currentLocation.coordinate.latitude, self.location1.coordinate.latitude, @"expected latitude from first processed location");
-    XCTAssertEqual(self.locationBroker.currentLocation.coordinate.longitude, self.location1.coordinate.longitude, @"expected longitude from first processed location");
+    // Expected first processed location
+    FSQAssertEqualDates(self.locationBroker.currentLocation.timestamp, self.location1.timestamp);
+    FSQAssertEqualCoordinates(self.locationBroker.currentLocation.coordinate, self.location1.coordinate);
 }
 
 @end
