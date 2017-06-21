@@ -1,3 +1,15 @@
+## 1.3.3 (2016-06-21)
+
+Features:
+
+- Fix bug where a visit subscriber refresh turns off visit monitoring if it is already on.
+
+## 1.3.2 (2016-04-18)
+
+Features:
+
+- Fix modulemap bug for Xcode 8 builds.
+
 ## 1.3.1 (2016-05-19)
 
 Features:
