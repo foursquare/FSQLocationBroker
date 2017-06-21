@@ -21,20 +21,7 @@
 		F14AD5B71BE027FE00D59271 /* FSQLocationBroker.h in Headers */ = {isa = PBXBuildFile; fileRef = F14AD5941BE00CD600D59271 /* FSQLocationBroker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F18199B81BE00C54009DB90D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199B71BE00C54009DB90D /* CoreLocation.framework */; };
 		F18199BA1BE00C59009DB90D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199B91BE00C59009DB90D /* Foundation.framework */; };
-		F53ACF241EA5659500CC2B16 /* FSQCurrentLocationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F53ACF231EA5659500CC2B16 /* FSQCurrentLocationTests.m */; };
-		F53ACF261EA5659600CC2B16 /* FSQLocationBroker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F18199A31BE0052E009DB90D /* FSQLocationBroker.framework */; };
-		F54F2B671EA65CC300618E44 /* FSQTestingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F54F2B661EA65CC300618E44 /* FSQTestingHelper.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		F53ACF271EA5659600CC2B16 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F181999A1BE0052E009DB90D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F18199A21BE0052E009DB90D;
-			remoteInfo = FSQLocationBroker;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		F14AD5941BE00CD600D59271 /* FSQLocationBroker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSQLocationBroker.h; sourceTree = "<group>"; };
@@ -49,11 +36,6 @@
 		F18199B71BE00C54009DB90D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		F18199B91BE00C59009DB90D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F1E365961BE13C15003BF022 /* module_appextension.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module_appextension.modulemap; sourceTree = "<group>"; };
-		F53ACF211EA5659500CC2B16 /* FSQLocationBrokerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FSQLocationBrokerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F53ACF231EA5659500CC2B16 /* FSQCurrentLocationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSQCurrentLocationTests.m; sourceTree = "<group>"; };
-		F53ACF251EA5659500CC2B16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F54F2B651EA65CC300618E44 /* FSQTestingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSQTestingHelper.h; sourceTree = "<group>"; };
-		F54F2B661EA65CC300618E44 /* FSQTestingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSQTestingHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,14 +59,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F53ACF1E1EA5659500CC2B16 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F53ACF261EA5659600CC2B16 /* FSQLocationBroker.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,7 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				F18199A51BE0052E009DB90D /* FSQLocationBroker */,
-				F53ACF221EA5659500CC2B16 /* FSQLocationBrokerTests */,
 				F18199A41BE0052E009DB90D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,7 +75,6 @@
 			children = (
 				F18199A31BE0052E009DB90D /* FSQLocationBroker.framework */,
 				F14AD5BC1BE027FE00D59271 /* FSQLocationBroker_AppExtension.framework */,
-				F53ACF211EA5659500CC2B16 /* FSQLocationBrokerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -122,25 +94,6 @@
 				F14AD59F1BE00DA500D59271 /* UIKit.framework */,
 			);
 			path = FSQLocationBroker;
-			sourceTree = "<group>";
-		};
-		F53ACF221EA5659500CC2B16 /* FSQLocationBrokerTests */ = {
-			isa = PBXGroup;
-			children = (
-				F54F2B641EA65C5800618E44 /* Helpers */,
-				F53ACF231EA5659500CC2B16 /* FSQCurrentLocationTests.m */,
-				F53ACF251EA5659500CC2B16 /* Info.plist */,
-			);
-			path = FSQLocationBrokerTests;
-			sourceTree = "<group>";
-		};
-		F54F2B641EA65C5800618E44 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				F54F2B651EA65CC300618E44 /* FSQTestingHelper.h */,
-				F54F2B661EA65CC300618E44 /* FSQTestingHelper.m */,
-			);
-			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,24 +156,6 @@
 			productReference = F18199A31BE0052E009DB90D /* FSQLocationBroker.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		F53ACF201EA5659500CC2B16 /* FSQLocationBrokerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F53ACF291EA5659600CC2B16 /* Build configuration list for PBXNativeTarget "FSQLocationBrokerTests" */;
-			buildPhases = (
-				F53ACF1D1EA5659500CC2B16 /* Sources */,
-				F53ACF1E1EA5659500CC2B16 /* Frameworks */,
-				F53ACF1F1EA5659500CC2B16 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F53ACF281EA5659600CC2B16 /* PBXTargetDependency */,
-			);
-			name = FSQLocationBrokerTests;
-			productName = FSQLocationBrokerTests;
-			productReference = F53ACF211EA5659500CC2B16 /* FSQLocationBrokerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -232,11 +167,6 @@
 				TargetAttributes = {
 					F18199A21BE0052E009DB90D = {
 						CreatedOnToolsVersion = 7.1;
-					};
-					F53ACF201EA5659500CC2B16 = {
-						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = V626J4XE97;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -254,7 +184,6 @@
 			targets = (
 				F18199A21BE0052E009DB90D /* FSQLocationBroker */,
 				F14AD5AD1BE027FE00D59271 /* FSQLocationBroker_AppExtension */,
-				F53ACF201EA5659500CC2B16 /* FSQLocationBrokerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -268,13 +197,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F18199A11BE0052E009DB90D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F53ACF1F1EA5659500CC2B16 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -302,24 +224,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F53ACF1D1EA5659500CC2B16 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F53ACF241EA5659500CC2B16 /* FSQCurrentLocationTests.m in Sources */,
-				F54F2B671EA65CC300618E44 /* FSQTestingHelper.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		F53ACF281EA5659600CC2B16 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F18199A21BE0052E009DB90D /* FSQLocationBroker */;
-			targetProxy = F53ACF271EA5659600CC2B16 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F14AD5BA1BE027FE00D59271 /* Debug */ = {
@@ -499,40 +404,6 @@
 			};
 			name = Release;
 		};
-		F53ACF2A1EA5659600CC2B16 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				DEVELOPMENT_TEAM = V626J4XE97;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = FSQLocationBrokerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.foursquare.FSQLocationBrokerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		F53ACF2B1EA5659600CC2B16 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				DEVELOPMENT_TEAM = V626J4XE97;
-				INFOPLIST_FILE = FSQLocationBrokerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.foursquare.FSQLocationBrokerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -559,15 +430,6 @@
 			buildConfigurations = (
 				F18199AC1BE0052E009DB90D /* Debug */,
 				F18199AD1BE0052E009DB90D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F53ACF291EA5659600CC2B16 /* Build configuration list for PBXNativeTarget "FSQLocationBrokerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F53ACF2A1EA5659600CC2B16 /* Debug */,
-				F53ACF2B1EA5659600CC2B16 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
