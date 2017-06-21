@@ -498,7 +498,7 @@ static Class sharedInstanceClass = nil;
     }
     
     if ([self.locationManager respondsToSelector:@selector(startMonitoringVisits)]) {
-        if ([self shouldMonitorVisits] && !self.isMonitoringVisits) {
+        if ([self shouldMonitorVisits]) {
             [self.locationManager startMonitoringVisits];
             self.isMonitoringVisits = YES;
         }
