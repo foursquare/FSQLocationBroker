@@ -1,11 +1,10 @@
-## 1.4.0 (2017-04-18)
+## 1.3.3 (2016-06-21)
 
 Features:
 
-- Ensure `currentLocation` is most recent location.
-- Separating `subscriberShouldRunInBackground` from needing to be a continuous location subscriber.
+- Fix bug where a visit subscriber refresh turns off visit monitoring if it is already on.
 
-## 1.3.2 (2017-04-06)
+## 1.3.2 (2016-04-18)
 
 Features:
 

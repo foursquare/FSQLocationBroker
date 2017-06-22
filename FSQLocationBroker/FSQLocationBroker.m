@@ -211,7 +211,7 @@ static Class sharedInstanceClass = nil;
     
     BOOL subscriberWantsBackgroundLocationUpdates = NO;
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
-        if (subscriberShouldRunInBackground(locationSubscriber)) {
+        if (subscriberWantsContinuousLocation(locationSubscriber) && subscriberShouldRunInBackground(locationSubscriber)) {
             subscriberWantsBackgroundLocationUpdates = YES;
             break;
         }
@@ -498,7 +498,7 @@ static Class sharedInstanceClass = nil;
     }
     
     if ([self.locationManager respondsToSelector:@selector(startMonitoringVisits)]) {
-        if ([self shouldMonitorVisits] && !self.isMonitoringVisits) {
+        if ([self shouldMonitorVisits]) {
             [self.locationManager startMonitoringVisits];
             self.isMonitoringVisits = YES;
         }
@@ -514,17 +514,16 @@ static Class sharedInstanceClass = nil;
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     BOOL isBackgrounded = applicationIsBackgrounded();
-    CLLocation *mostRecentLocation = [locations firstObject];
+    CLLocation *newestLocation = nil;
     for (CLLocation *location in locations) {
-        if ([mostRecentLocation.timestamp compare:location.timestamp] == NSOrderedAscending) {
-            mostRecentLocation = location;
+        if (!newestLocation ||
+            [newestLocation.timestamp earlierDate:location.timestamp] == newestLocation.timestamp) {
+            newestLocation = location;
         }
     }
     
-    // only update if currentLocation is not set or if mostRecentLocation happened after currentLocation
-    if (!self.currentLocation || [self.currentLocation.timestamp compare:mostRecentLocation.timestamp] == NSOrderedAscending) {
-        self.currentLocation = mostRecentLocation;
-    }
+    self.currentLocation = newestLocation;
+    
     
     for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
         if (subscriberShouldReceiveLocationUpdates(locationSubscriber)
