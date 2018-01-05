@@ -1,10 +1,10 @@
-## 1.3.3 (2016-06-21)
+## 1.3.3 (2017-06-21)
 
 Features:
 
 - Fix bug where a visit subscriber refresh turns off visit monitoring if it is already on.
 
-## 1.3.2 (2016-04-18)
+## 1.3.2 (2017-04-18)
 
 Features:
 
