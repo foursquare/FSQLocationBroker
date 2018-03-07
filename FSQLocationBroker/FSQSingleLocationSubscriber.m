@@ -7,11 +7,15 @@
 #import "FSQSingleLocationSubscriber.h"
 @import UIKit;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FSQSingleLocationSubscriber ()
-@property (nonatomic) NSTimer *cutoffTimer;
-@property (nonatomic) CLLocation *bestLocationReceived;
-@property (nonatomic) NSDate *startTime;
+
+@property (nonatomic, nullable) NSTimer *cutoffTimer;
+@property (nonatomic, nullable) CLLocation *bestLocationReceived;
+@property (nonatomic, nullable) NSDate *startTime;
 @property (nonatomic) FSQLocationSubscriberOptions locationSubscriberOptions;
+
 @end
 
 @implementation FSQSingleLocationSubscriber
@@ -43,12 +47,12 @@
 }
 
 
-+ (instancetype)startWithDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy
-               maximumAcceptableAccuracy:(CLLocationAccuracy)maximumAcceptableAccuracy
-        maximumAcceptableLocationRecency:(NSTimeInterval)maximumAcceptableRecency
-                              cutoffTime:(NSTimeInterval)cutoffTimeInterval
-                   shouldRunInBackground:(BOOL)shouldRunInBackground
-                            onCompletion:(FSQSingleLocSubCompletionBlock)onCompletion {
++ (nullable instancetype)startWithDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy
+                        maximumAcceptableAccuracy:(CLLocationAccuracy)maximumAcceptableAccuracy
+                 maximumAcceptableLocationRecency:(NSTimeInterval)maximumAcceptableRecency
+                                       cutoffTime:(NSTimeInterval)cutoffTimeInterval
+                            shouldRunInBackground:(BOOL)shouldRunInBackground
+                                     onCompletion:(FSQSingleLocSubCompletionBlock)onCompletion {
     if (!onCompletion || !(cutoffTimeInterval > 0) || !(maximumAcceptableAccuracy > 0)) {
         NSAssert(0, @"FSQSimpleLocationSubscriber: Must include a completion block, cutoff time >0 and max accuracy > 0");
         return nil;
@@ -176,3 +180,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
