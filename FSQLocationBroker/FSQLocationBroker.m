@@ -121,9 +121,7 @@ static Class sharedInstanceClass = nil;
         [self.locationManager stopMonitoringSignificantLocationChanges];
         [self.locationManager stopUpdatingLocation];
         
-        if ([self.locationManager respondsToSelector:@selector(stopMonitoringVisits)]) {
-            [self.locationManager stopMonitoringVisits];
-        }
+        [self.locationManager stopMonitoringVisits];
         
         for (CLRegion *region in self.locationManager.monitoredRegions) {
             [self.locationManager stopMonitoringForRegion:region];
@@ -493,15 +491,13 @@ static Class sharedInstanceClass = nil;
         return;
     }
     
-    if ([self.locationManager respondsToSelector:@selector(startMonitoringVisits)]) {
-        if ([self shouldMonitorVisits]) {
-            [self.locationManager startMonitoringVisits];
-            self.isMonitoringVisits = YES;
-        }
-        else {
-            [self.locationManager stopMonitoringVisits];
-            self.isMonitoringVisits = NO;
-        }
+    if ([self shouldMonitorVisits]) {
+        [self.locationManager startMonitoringVisits];
+        self.isMonitoringVisits = YES;
+    }
+    else {
+        [self.locationManager stopMonitoringVisits];
+        self.isMonitoringVisits = NO;
     }
 }
 
@@ -639,17 +635,11 @@ static Class sharedInstanceClass = nil;
 #pragma mark - Authorization -
 
 - (void)requestWhenInUseAuthorization {
-    // Guard against users on iOS 7 and earlier
-    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-        [self.locationManager requestWhenInUseAuthorization];        
-    }
+    [self.locationManager requestWhenInUseAuthorization];
 }
 
 - (void)requestAlwaysAuthorization {
-    // Guard against users on iOS 7 and earlier
-    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        [self.locationManager requestAlwaysAuthorization];        
-    }
+    [self.locationManager requestAlwaysAuthorization];
 }
 
 #pragma mark - KVO callbacks -
