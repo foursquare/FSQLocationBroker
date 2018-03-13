@@ -515,7 +515,7 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
  @param region The region for which an error occured.
  @param error  The error that was received.
  */
-- (void)monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error;
+- (void)monitoringDidFailForRegion:(nullable CLRegion *)region withError:(NSError *)error;
 
 @end
 
