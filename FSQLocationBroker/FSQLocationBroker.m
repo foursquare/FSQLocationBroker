@@ -7,12 +7,14 @@
 #import "FSQLocationBroker.h"
 @import UIKit;
 
+NS_ASSUME_NONNULL_BEGIN
+
 static void *kLocationBrokerLocationSubscriberKVOContext = &kLocationBrokerLocationSubscriberKVOContext;
 static void *kLocationBrokerRegionMonitoringSubscriberKVOContext = &kLocationBrokerRegionMonitoringSubscriberKVOContext;
 static void *kLocationBrokerVisitSubscriberKVOContext = &kLocationBrokerVisitSubscriberKVOContext;
 
 // Helper functions for code readability and reuse
-BOOL applicationIsBackgrounded();
+BOOL applicationIsBackgrounded(void);
 BOOL subscriberShouldRunInBackground(NSObject<FSQLocationSubscriber> *locationSubscriber);
 BOOL subscriberShouldReceiveLocationUpdates(NSObject<FSQLocationSubscriber> *locationSubscriber);
 BOOL subscriberShouldReceiveErrors(NSObject<FSQLocationSubscriber> *locationSubscriber);
@@ -26,7 +28,7 @@ BOOL subscriberWantsVisitMonitoring(NSObject<FSQVisitMonitoringSubscriber> *loca
 @property (atomic, readwrite) NSSet *locationSubscribers;
 @property (atomic, readwrite) NSSet *regionSubscribers;
 @property (atomic, readwrite) NSSet *visitSubscribers;
-@property (atomic, copy) CLLocation *currentLocation;
+@property (atomic, copy, nullable) CLLocation *currentLocation;
 
 // Private
 @property (nonatomic) CLLocationManager *locationManager;
@@ -59,23 +61,19 @@ static Class sharedInstanceClass = nil;
             sharedInstance = [sharedInstanceClass shared];
         }
         else {
-            sharedInstance = [self new];
+            sharedInstance = [[self alloc] init];
         }
     });
     return sharedInstance;
 }
 
 + (BOOL)isAuthorized {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
     return (authStatus == kCLAuthorizationStatusAuthorizedAlways
             || authStatus == kCLAuthorizationStatusAuthorizedWhenInUse);
-#else
-    return ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized);
-#endif
 }
 
-- (id)init {
+- (instancetype)init {
     if ((self = [super init])) {
         self.locationManager = [CLLocationManager new];
         
@@ -123,9 +121,7 @@ static Class sharedInstanceClass = nil;
         [self.locationManager stopMonitoringSignificantLocationChanges];
         [self.locationManager stopUpdatingLocation];
         
-        if ([self.locationManager respondsToSelector:@selector(stopMonitoringVisits)]) {
-            [self.locationManager stopMonitoringVisits];
-        }
+        [self.locationManager stopMonitoringVisits];
         
         for (CLRegion *region in self.locationManager.monitoredRegions) {
             [self.locationManager stopMonitoringForRegion:region];
@@ -296,12 +292,10 @@ static Class sharedInstanceClass = nil;
         self.isUpdatingLocation = NO;
     }
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
     // Should allow background location
-    if ([self.locationManager respondsToSelector:@selector(allowsBackgroundLocationUpdates)]) {
+    if (@available(iOS 9.0, *)) {
         self.locationManager.allowsBackgroundLocationUpdates = [self shouldAllowBackgroundLocationUpdates];
     }
-#endif
 }
 
 #pragma mark RegionMonitoringSubscribers
@@ -351,7 +345,7 @@ static Class sharedInstanceClass = nil;
                                           shouldRemoveAllUnmonitoredRegions:NO];
 }
 
-- (void)refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:(NSString *)subscriberIdentifier 
+- (void)refreshRegionMonitoringSubscribersRemovingSubscriberWithIdentifer:(nullable NSString *)subscriberIdentifier 
                                         shouldRemoveAllUnmonitoredRegions:(BOOL)shouldRemoveAllUnmonitoredRegions {
     if (![NSThread isMainThread]) {
         dispatch_async(dispatch_get_main_queue(), ^() {
@@ -443,7 +437,7 @@ static Class sharedInstanceClass = nil;
     return [subscribersByIdentifier copy];
 }
 
-- (NSString *)subscriberIdentifierFromRegionIdentifier:(NSString *)regionIdentifier {
+- (nullable NSString *)subscriberIdentifierFromRegionIdentifier:(NSString *)regionIdentifier {
     NSArray *identifierComponents = [regionIdentifier componentsSeparatedByString:@"+"];
     if (identifierComponents.count > 1) {
         return [identifierComponents firstObject];
@@ -497,15 +491,13 @@ static Class sharedInstanceClass = nil;
         return;
     }
     
-    if ([self.locationManager respondsToSelector:@selector(startMonitoringVisits)]) {
-        if ([self shouldMonitorVisits]) {
-            [self.locationManager startMonitoringVisits];
-            self.isMonitoringVisits = YES;
-        }
-        else {
-            [self.locationManager stopMonitoringVisits];
-            self.isMonitoringVisits = NO;
-        }
+    if ([self shouldMonitorVisits]) {
+        [self.locationManager startMonitoringVisits];
+        self.isMonitoringVisits = YES;
+    }
+    else {
+        [self.locationManager stopMonitoringVisits];
+        self.isMonitoringVisits = NO;
     }
 }
 
@@ -595,7 +587,7 @@ static Class sharedInstanceClass = nil;
     }
 }
 
-- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
+- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(nullable CLRegion *)region withError:(NSError *)error {
     NSString *regionsSubscriberIdentifier = [self subscriberIdentifierFromRegionIdentifier:region.identifier];
     
     if (regionsSubscriberIdentifier) {
@@ -642,30 +634,20 @@ static Class sharedInstanceClass = nil;
 
 #pragma mark - Authorization -
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-
 - (void)requestWhenInUseAuthorization {
-    // Guard against users on iOS 7 and earlier
-    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-        [self.locationManager requestWhenInUseAuthorization];        
-    }
+    [self.locationManager requestWhenInUseAuthorization];
 }
 
 - (void)requestAlwaysAuthorization {
-    // Guard against users on iOS 7 and earlier
-    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        [self.locationManager requestAlwaysAuthorization];        
-    }
+    [self.locationManager requestAlwaysAuthorization];
 }
-
-#endif
 
 #pragma mark - KVO callbacks -
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath
+                      ofObject:(nullable id)object
+                        change:(nullable NSDictionary *)change
+                       context:(nullable void *)context {
     if (context == kLocationBrokerLocationSubscriberKVOContext) {
         [self refreshLocationSubscribers];
     }
@@ -715,3 +697,5 @@ BOOL subscriberWantsSLCMonitoring(NSObject<FSQLocationSubscriber> *locationSubsc
 BOOL subscriberWantsVisitMonitoring(NSObject<FSQVisitMonitoringSubscriber> *locationSubscriber) {
     return locationSubscriber.shouldMonitorVisits;
 }
+
+NS_ASSUME_NONNULL_END

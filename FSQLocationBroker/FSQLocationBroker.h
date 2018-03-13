@@ -7,11 +7,11 @@
 @import Foundation;
 @import CoreLocation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol FSQLocationSubscriber, FSQRegionMonitoringSubscriber;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 @protocol FSQVisitMonitoringSubscriber;
-#endif
 
 #pragma mark - FSQLocationBroker interface
 /**
@@ -29,7 +29,7 @@
  
  @see [CLLocationManager location]
  */
-@property (atomic, readonly, copy) CLLocation *currentLocation;
+@property (atomic, readonly, copy, nullable) CLLocation *currentLocation;
 
 /**
  The most accuracy we are currently requesting from the broker's CLLocationManager.
@@ -54,8 +54,6 @@
  */
 @property (atomic, readonly) NSSet *regionSubscribers;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-
 /**
  The current set of visit monitoring subscribers.
  
@@ -63,8 +61,6 @@
  set might not immediately reflect changes you make.
  */
 @property (atomic, readonly) NSSet *visitSubscribers;
-
-#endif
 
 /**
  Access point to the location broker shared pointer/singleton. 
@@ -204,8 +200,6 @@
  */
 - (void)requestStateForRegion:(CLRegion *)region NS_REQUIRES_SUPER;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-
 /**
  Add a new visit subscriber to the broker.
  
@@ -238,8 +232,6 @@
  */
 - (void)refreshVisitSubscribers NS_REQUIRES_SUPER;
 
-#endif
-
 /**
  Remove all subscribers of all types and turn off all location services.
  
@@ -251,7 +243,6 @@
  */
 - (void)removeAllSubscribers NS_REQUIRES_SUPER;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 /**
  Request InUse Authorization.
  
@@ -265,7 +256,6 @@
  This allows location services to run in the background.
  */
 - (void)requestAlwaysAuthorization;
-#endif
 
 @end
 
@@ -402,8 +392,6 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
 
 @end
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-
 #pragma mark - FSQVisitMonitoringSubscriber Protocol
 
 @protocol FSQVisitMonitoringSubscriber <NSObject>
@@ -422,8 +410,6 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
 - (void)locationManagerDidVisit:(CLVisit *)visit;
 
 @end
-
-#endif
 
 #pragma mark - FSQRegionMonitoringSubscriber Protocol
 
@@ -529,6 +515,8 @@ typedef NS_OPTIONS(NSUInteger, FSQLocationSubscriberOptions) {
  @param region The region for which an error occured.
  @param error  The error that was received.
  */
-- (void)monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error;
+- (void)monitoringDidFailForRegion:(nullable CLRegion *)region withError:(NSError *)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

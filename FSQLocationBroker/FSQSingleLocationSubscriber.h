@@ -7,6 +7,8 @@
 @import Foundation;
 #import "FSQLocationBroker.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  Callback block when the subscriber finds an acceptable location or times out or fails due to an error.
  
@@ -22,7 +24,7 @@
  
  @see [CLLocationManagerDelegate locationManager:didFailWithError:]
  */
-typedef void (^FSQSingleLocSubCompletionBlock)(BOOL didSucceed, CLLocation *location, NSNumber *elapsedTime, NSError *error);
+typedef void (^FSQSingleLocSubCompletionBlock)(BOOL didSucceed, CLLocation *_Nullable location, NSNumber *_Nullable elapsedTime, NSError *_Nullable error);
 
 /**
  This class is intended as a simple way to get a single location from the system.
@@ -113,12 +115,12 @@ typedef void (^FSQSingleLocSubCompletionBlock)(BOOL didSucceed, CLLocation *loca
  @note If there is already an acceptable accuracy on the location broker, the completion block will be 
        called synchronously and this method will return nil.
  */
-+ (instancetype)startWithDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy
-               maximumAcceptableAccuracy:(CLLocationAccuracy)maximumAcceptableAccuracy
-        maximumAcceptableLocationRecency:(NSTimeInterval)maximumAcceptableRecency
-                              cutoffTime:(NSTimeInterval)cutoffTimeInterval
-                   shouldRunInBackground:(BOOL)shouldRunInBackground
-                            onCompletion:(FSQSingleLocSubCompletionBlock)onCompletion;
++ (nullable instancetype)startWithDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy
+                        maximumAcceptableAccuracy:(CLLocationAccuracy)maximumAcceptableAccuracy
+                 maximumAcceptableLocationRecency:(NSTimeInterval)maximumAcceptableRecency
+                                       cutoffTime:(NSTimeInterval)cutoffTimeInterval
+                            shouldRunInBackground:(BOOL)shouldRunInBackground
+                                     onCompletion:(FSQSingleLocSubCompletionBlock)onCompletion;
 /**
  Manually stop the subscriber listening for updates.
  
@@ -130,3 +132,5 @@ typedef void (^FSQSingleLocSubCompletionBlock)(BOOL didSucceed, CLLocation *loca
 - (void)cancel;
 
 @end
+
+NS_ASSUME_NONNULL_END
