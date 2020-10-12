@@ -106,12 +106,18 @@ static Class sharedInstanceClass = nil;
 - (void)removeAllSubscribers {
     dispatch_async(self.serialQueue, ^{
         for (NSObject<FSQLocationSubscriber> *locationSubscriber in self.locationSubscribers) {
-            [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(desiredAccuracy))];
-            [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(locationSubscriberOptions))];
+            @try {
+                [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(desiredAccuracy))];
+            } @catch (NSException * __unused exception) {}
+            @try {
+                [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(locationSubscriberOptions))];
+            } @catch (NSException * __unused exception) {}
         }
         
         for (NSObject<FSQRegionMonitoringSubscriber> *regionSubscriber in self.regionSubscribers) {
-            [regionSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(monitoredRegions))];
+            @try {
+                [regionSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(monitoredRegions))];
+            } @catch (NSException * __unused exception) {}
         }
         
         self.locationSubscribers = [NSSet new];
@@ -160,8 +166,12 @@ static Class sharedInstanceClass = nil;
 - (void)removeLocationSubscriber:(NSObject<FSQLocationSubscriber> *)locationSubscriber {
     dispatch_async(self.serialQueue, ^{
         if ([self.locationSubscribers containsObject:locationSubscriber]) {
-            [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(desiredAccuracy))];
-            [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(locationSubscriberOptions))];
+            @try {
+                [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(desiredAccuracy))];
+            } @catch (NSException * __unused exception) {}
+            @try {
+                [locationSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(locationSubscriberOptions))];
+            } @catch (NSException * __unused exception) {}
             
             NSMutableSet *mutableLocationSubscribers = [self.locationSubscribers mutableCopy];
             [mutableLocationSubscribers removeObject:locationSubscriber];
@@ -327,7 +337,9 @@ static Class sharedInstanceClass = nil;
 - (void)removeRegionMonitoringSubscriber:(NSObject<FSQRegionMonitoringSubscriber> *)regionSubscriber {
     dispatch_async(self.serialQueue, ^{
         if ([self.regionSubscribers containsObject:regionSubscriber]) {
-            [regionSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(monitoredRegions))];
+            @try {
+                [regionSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(monitoredRegions))];
+            } @catch (NSException * __unused exception) {}
             
             NSMutableSet *mutableRegionSubscribers = [self.regionSubscribers mutableCopy];
             [mutableRegionSubscribers removeObject:regionSubscriber];
@@ -472,7 +484,9 @@ static Class sharedInstanceClass = nil;
 - (void)removeVisitSubscriber:(NSObject<FSQVisitMonitoringSubscriber> *)visitSubscriber {
     dispatch_async(self.serialQueue, ^{
         if ([self.visitSubscribers containsObject:visitSubscriber]) {
-            [visitSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(shouldMonitorVisits))];
+            @try {
+                [visitSubscriber removeObserver:self forKeyPath:NSStringFromSelector(@selector(shouldMonitorVisits))];
+            } @catch (NSException * __unused exception) {}
             
             NSMutableSet *mutableVisitSubscribers = [self.visitSubscribers mutableCopy];
             [mutableVisitSubscribers removeObject:visitSubscriber];
