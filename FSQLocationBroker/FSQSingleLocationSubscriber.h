@@ -5,7 +5,11 @@
 //
 
 @import Foundation;
-#import "FSQLocationBroker.h"
+#ifndef FSQ_IS_APP_EXTENSION
+#import <FSQLocationBroker/FSQLocationBroker.h>
+#else
+#import <FSQLocationBroker_AppExtension/FSQLocationBroker.h>
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
